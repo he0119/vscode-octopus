@@ -10,16 +10,25 @@
     "Programming Languages"
   ],
   "contributes": {
-    "languages": [{
-      "id": "octopus",
-      "aliases": ["Octopus", "octopus"],
-      "extensions": ["inp"],
-      "configuration": "./language-configuration.json"
-    }],
-    "grammars": [{
-      "language": "octopus",
-      "scopeName": "source.octopus",
-      "path": "./syntaxes/octopus.tmLanguage.json"
-    }]
+    "languages": [
+      {
+        "id": "octopus",
+        "aliases": [
+          "Octopus",
+          "octopus"
+        ],
+        "extensions": [
+          "inp"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "octopus",
+        "scopeName": "source.octopus",
+        "path": "./syntaxes/octopus.tmLanguage.json"
+      }
+    ]
   }
 }
