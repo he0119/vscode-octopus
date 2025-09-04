@@ -83,48 +83,6 @@ function activate(context) {
     }
   );
 
-  // 注册 Code Lens Provider（在变量上方显示"查看文档"链接）
-  const codeLensProvider = vscode.languages.registerCodeLensProvider(
-    "octopus",
-    {
-      provideCodeLenses(document, token) {
-        const codeLenses = [];
-        const text = document.getText();
-        const lines = text.split("\n");
-
-        for (let i = 0; i < lines.length; i++) {
-          const line = lines[i];
-          const words = line.split(/\s+/);
-
-          for (const word of words) {
-            const cleanWord = word.trim();
-            if (variables[cleanWord]) {
-              const startIndex = line.indexOf(cleanWord);
-              if (startIndex !== -1) {
-                const range = new vscode.Range(
-                  i,
-                  startIndex,
-                  i,
-                  startIndex + cleanWord.length
-                );
-
-                const codeLens = new vscode.CodeLens(range, {
-                  title: "📖 查看文档",
-                  command: "octopus.openDocumentation",
-                  arguments: [cleanWord],
-                });
-
-                codeLenses.push(codeLens);
-              }
-            }
-          }
-        }
-
-        return codeLenses;
-      },
-    }
-  );
-
   // 注册命令：打开文档
   const openDocCommand = vscode.commands.registerCommand(
     "octopus.openDocumentation",
@@ -205,7 +163,6 @@ function activate(context) {
   context.subscriptions.push(
     hoverProvider,
     definitionProvider,
-    codeLensProvider,
     openDocCommand,
     showVariablesCommand,
     completionProvider
