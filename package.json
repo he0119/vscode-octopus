@@ -43,8 +43,46 @@
         "command": "octopus.showVariables",
         "title": "显示所有 Octopus 变量",
         "category": "Octopus"
+      },
+      {
+        "command": "octopus.switchVersion",
+        "title": "切换 Octopus 版本",
+        "category": "Octopus"
+      },
+      {
+        "command": "octopus.autoDetectVersion",
+        "title": "自动检测 Octopus 版本",
+        "category": "Octopus"
+      },
+      {
+        "command": "octopus.detectSystemVersion",
+        "title": "检测系统安装的 Octopus 版本",
+        "category": "Octopus"
       }
     ],
+    "configuration": {
+      "title": "Octopus",
+      "properties": {
+        "octopus.version": {
+          "type": "string",
+          "default": "14.1",
+          "enum": [
+            "14.1",
+            "16.2"
+          ],
+          "enumDescriptions": [
+            "Octopus 14.1 版本",
+            "Octopus 16.2 版本"
+          ],
+          "description": "选择要使用的 Octopus 版本"
+        },
+        "octopus.autoDetectVersion": {
+          "type": "boolean",
+          "default": false,
+          "description": "启用时，扩展会尝试自动检测当前文件或工作区的 Octopus 版本"
+        }
+      }
+    },
     "menus": {
       "editor/context": [
         {
@@ -57,6 +95,15 @@
         {
           "command": "octopus.showVariables",
           "when": "resourceLangId == octopus"
+        },
+        {
+          "command": "octopus.switchVersion"
+        },
+        {
+          "command": "octopus.autoDetectVersion"
+        },
+        {
+          "command": "octopus.detectSystemVersion"
         }
       ]
     }

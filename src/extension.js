@@ -1,5 +1,30 @@
 const vscode = require("vscode");
-const variables = require("./varinfo-14.1.json");
+const path = require("path");
+const versionDetection = require("./version-detection");
+
+// 版本相关变量
+let currentVersion = "14.1";
+let variables = {};
+
+// 加载指定版本的变量信息
+function loadVariables(version) {
+  try {
+    const varInfoPath = path.join(__dirname, `varinfo-${version}.json`);
+    variables = require(varInfoPath);
+    currentVersion = version;
+    log(`成功加载 Octopus ${version} 版本的变量信息`, 'INFO');
+    return true;
+  } catch (error) {
+    logError(error, `加载 Octopus ${version} 版本变量信息失败`);
+    return false;
+  }
+}
+
+// 获取配置中的版本设置
+function getConfiguredVersion() {
+  const config = vscode.workspace.getConfiguration('octopus');
+  return config.get('version', '14.1');
+}
 
 // 创建输出通道
 let outputChannel;
@@ -389,6 +414,15 @@ function activate(context) {
   try {
     log("Octopus 插件开始激活", 'INFO');
 
+    // 初始化：加载配置的版本
+    const configuredVersion = getConfiguredVersion();
+    if (!loadVariables(configuredVersion)) {
+      // 如果加载失败，尝试加载默认版本
+      if (!loadVariables("14.1")) {
+        throw new Error("无法加载任何版本的变量信息");
+      }
+    }
+
     // 创建诊断集合
     const diagnosticCollection =
       vscode.languages.createDiagnosticCollection("octopus");
@@ -445,6 +479,9 @@ function activate(context) {
 
           // 添加变量名作为标题
           markdown.appendMarkdown(`## ${variable.Name || word}\n\n`);
+
+          // 添加版本信息
+          markdown.appendMarkdown(`**版本**: Octopus ${currentVersion}\n\n`);
 
           // 生成并添加文档链接
           const docUrl = variable.docUrl || generateDocUrl(variable.Section, variable.Name);
@@ -505,7 +542,7 @@ function activate(context) {
             };
           });
 
-          quickPick.placeholder = "搜索 Octopus 变量...";
+          quickPick.placeholder = `搜索 Octopus ${currentVersion} 变量...`;
           quickPick.matchOnDescription = true;
           quickPick.matchOnDetail = true;
 
@@ -526,6 +563,132 @@ function activate(context) {
 
           quickPick.show();
         }, '显示变量命令');
+      }
+    );
+
+    // 注册命令：切换版本
+    const switchVersionCommand = vscode.commands.registerCommand(
+      "octopus.switchVersion",
+      async () => {
+        return safeExecute(async () => {
+          const versions = ["14.1", "16.2"];
+          const selectedVersion = await vscode.window.showQuickPick(
+            versions.map(version => ({
+              label: `Octopus ${version}`,
+              description: version === currentVersion ? "(当前版本)" : "",
+              version: version
+            })),
+            {
+              placeHolder: `选择 Octopus 版本 (当前: ${currentVersion})`,
+              canPickMany: false
+            }
+          );
+
+          if (selectedVersion && selectedVersion.version !== currentVersion) {
+            if (loadVariables(selectedVersion.version)) {
+              // 更新配置
+              const config = vscode.workspace.getConfiguration('octopus');
+              await config.update('version', selectedVersion.version, vscode.ConfigurationTarget.Global);
+
+              // 重新验证所有打开的文档
+              vscode.workspace.textDocuments.forEach(updateDiagnostics);
+
+              vscode.window.showInformationMessage(
+                `已切换到 Octopus ${selectedVersion.version} 版本`
+              );
+            } else {
+              vscode.window.showErrorMessage(
+                `切换到 Octopus ${selectedVersion.version} 版本失败`
+              );
+            }
+          }
+        }, '切换版本命令');
+      }
+    );
+
+    // 注册命令：自动检测版本
+    const autoDetectVersionCommand = vscode.commands.registerCommand(
+      "octopus.autoDetectVersion",
+      async () => {
+        return safeExecute(async () => {
+          vscode.window.showInformationMessage("正在检测 Octopus 版本...");
+
+          const detectedVersion = await versionDetection.autoDetectVersion();
+
+          if (detectedVersion) {
+            if (detectedVersion !== currentVersion) {
+              const action = await vscode.window.showInformationMessage(
+                `检测到 Octopus ${detectedVersion} 版本，是否切换？`,
+                "切换",
+                "取消"
+              );
+
+              if (action === "切换" && loadVariables(detectedVersion)) {
+                // 更新配置
+                const config = vscode.workspace.getConfiguration('octopus');
+                await config.update('version', detectedVersion, vscode.ConfigurationTarget.Workspace);
+
+                // 重新验证所有打开的文档
+                vscode.workspace.textDocuments.forEach(updateDiagnostics);
+
+                vscode.window.showInformationMessage(
+                  `已切换到检测的 Octopus ${detectedVersion} 版本`
+                );
+              }
+            } else {
+              vscode.window.showInformationMessage(
+                `检测到当前版本 Octopus ${detectedVersion}，无需切换`
+              );
+            }
+          } else {
+            vscode.window.showWarningMessage(
+              "无法自动检测 Octopus 版本，请手动选择版本"
+            );
+          }
+        }, '自动检测版本命令');
+      }
+    )
+
+    // 注册命令：检测系统版本
+    const detectSystemVersionCommand = vscode.commands.registerCommand(
+      "octopus.detectSystemVersion",
+      async () => {
+        return safeExecute(async () => {
+          vscode.window.showInformationMessage("正在检测系统安装的 Octopus 版本...");
+
+          const systemVersion = await versionDetection.detectVersionFromSystem();
+
+          if (systemVersion) {
+            if (systemVersion !== currentVersion) {
+              const action = await vscode.window.showInformationMessage(
+                `检测到系统安装的 Octopus ${systemVersion} 版本，是否切换？`,
+                "切换",
+                "取消"
+              );
+
+              if (action === "切换" && loadVariables(systemVersion)) {
+                // 更新配置
+                const config = vscode.workspace.getConfiguration('octopus');
+                await config.update('version', systemVersion, vscode.ConfigurationTarget.Workspace);
+
+                // 重新验证所有打开的文档
+                vscode.workspace.textDocuments.forEach(updateDiagnostics);
+
+                vscode.window.showInformationMessage(
+                  `已切换到系统安装的 Octopus ${systemVersion} 版本`
+                );
+              }
+            } else {
+              vscode.window.showInformationMessage(
+                `系统安装的版本 Octopus ${systemVersion} 与当前版本一致`
+              );
+            }
+          } else {
+            vscode.window.showWarningMessage(
+              "无法检测到系统安装的 Octopus 版本。请确保 Octopus 已安装并在 PATH 环境变量中。"
+            );
+          }
+        }, '检测系统版本命令');
       }
     );
 
@@ -720,15 +883,35 @@ function activate(context) {
       }
     );
 
+    // 监听配置变化
+    const onConfigurationChange = vscode.workspace.onDidChangeConfiguration((event) => {
+      if (event.affectsConfiguration('octopus.version')) {
+        const newVersion = getConfiguredVersion();
+        if (newVersion !== currentVersion) {
+          if (loadVariables(newVersion)) {
+            // 重新验证所有打开的文档
+            vscode.workspace.textDocuments.forEach(updateDiagnostics);
+            vscode.window.showInformationMessage(
+              `Octopus 版本已更新为 ${newVersion}`
+            );
+          }
+        }
+      }
+    });
+
     // 将所有 disposables 添加到 context
     context.subscriptions.push(
       hoverProvider,
       showVariablesCommand,
+      switchVersionCommand,
+      autoDetectVersionCommand,
+      detectSystemVersionCommand,
       completionProvider,
       codeActionProvider,
       diagnosticCollection,
       onDocumentChange,
-      onDocumentOpen
+      onDocumentOpen,
+      onConfigurationChange
     );
 
     log("Octopus 插件激活完成", 'INFO');
