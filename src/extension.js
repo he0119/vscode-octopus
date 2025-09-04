@@ -179,7 +179,7 @@ function createDiagnostics(document) {
       const diagnostic = new vscode.Diagnostic(
         range,
         validation.message +
-          (validation.suggestion ? ` (${validation.suggestion})` : ""),
+        (validation.suggestion ? ` (${validation.suggestion})` : ""),
         vscode.DiagnosticSeverity.Error
       );
       diagnostic.source = "octopus";
@@ -210,17 +210,6 @@ function activate(context) {
       return;
     }
 
-    // 额外检查：确保文件扩展名正确
-    const fileName = document.fileName.toLowerCase();
-    if (!fileName.endsWith(".inp")) {
-      console.log(`跳过非 .inp 文件: ${document.fileName}`);
-      diagnosticCollection.delete(document.uri);
-      return;
-    }
-
-    console.log(
-      `验证 Octopus 文件: ${document.fileName}, 语言ID: ${document.languageId}`
-    );
     const diagnostics = createDiagnostics(document);
     diagnosticCollection.set(document.uri, diagnostics);
   };
