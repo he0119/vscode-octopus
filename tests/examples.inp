@@ -67,7 +67,7 @@ OutputEvery = 10
 =====================================================
 
 - Mathematical operations
-BoxRadius = 3.5 * angstrom
+Radius = 3.5 * angstrom
 TotalEnergy = 0.1 * eV
 WaveVector = 2 * pi / 5.0
 Distance = sqrt(x^2 + y^2 + z^2)
@@ -163,7 +163,7 @@ BoxShape = invalid_shape
 
 - Ground state calculation setup
 CalculationMode = gs
-TheoryLevel = dft
+TheoryLevel = hartree_fock
 XCFunctional = gga_x_pbe + gga_c_pbe
 MixingScheme = broyden
 Mixing = 0.3

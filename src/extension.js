@@ -36,22 +36,9 @@ function parseVariableAssignment(line) {
 function validateVariableValue(variableName, value) {
   const variable = variables[variableName];
 
-  // 检查变量是否存在
+  // 如果变量不存在，返回null表示无需验证
   if (!variable) {
-    const suggestions = Object.keys(variables)
-      .filter(
-        (name) =>
-          name.toLowerCase().includes(variableName.toLowerCase()) ||
-          variableName.toLowerCase().includes(name.toLowerCase())
-      )
-      .slice(0, 3);
-
-    return {
-      isValid: false,
-      message: `未知变量 '${variableName}'`,
-      suggestion:
-        suggestions.length > 0 ? `建议: ${suggestions.join(", ")}` : null,
-    };
+    return null;
   }
 
   const cleanValue = value.replace(/['"]/g, ""); // 移除引号
@@ -181,38 +168,22 @@ function createDiagnostics(document) {
       assignment.value
     );
 
-    if (!validation.isValid) {
-      // 变量名错误
-      if (!variables[assignment.variableName]) {
-        const range = new vscode.Range(
-          new vscode.Position(i, assignment.varStartPos),
-          new vscode.Position(i, assignment.varEndPos)
-        );
+    // 只有在变量存在且验证失败时才添加诊断
+    if (validation && !validation.isValid) {
+      // 变量值错误
+      const range = new vscode.Range(
+        new vscode.Position(i, assignment.valueStartPos),
+        new vscode.Position(i, assignment.valueEndPos)
+      );
 
-        const diagnostic = new vscode.Diagnostic(
-          range,
-          validation.message +
-            (validation.suggestion ? ` (${validation.suggestion})` : ""),
-          vscode.DiagnosticSeverity.Error
-        );
-        diagnostic.source = "octopus";
-        diagnostics.push(diagnostic);
-      } else {
-        // 变量值错误
-        const range = new vscode.Range(
-          new vscode.Position(i, assignment.valueStartPos),
-          new vscode.Position(i, assignment.valueEndPos)
-        );
-
-        const diagnostic = new vscode.Diagnostic(
-          range,
-          validation.message +
-            (validation.suggestion ? ` (${validation.suggestion})` : ""),
-          vscode.DiagnosticSeverity.Error
-        );
-        diagnostic.source = "octopus";
-        diagnostics.push(diagnostic);
-      }
+      const diagnostic = new vscode.Diagnostic(
+        range,
+        validation.message +
+          (validation.suggestion ? ` (${validation.suggestion})` : ""),
+        vscode.DiagnosticSeverity.Error
+      );
+      diagnostic.source = "octopus";
+      diagnostics.push(diagnostic);
     }
   }
 
@@ -356,30 +327,99 @@ function activate(context) {
     {
       provideCompletionItems(document, position, token, context) {
         const completionItems = [];
+        const line = document.lineAt(position.line);
+        const lineText = line.text;
+        const textBeforeCursor = lineText.substring(0, position.character);
 
-        Object.keys(variables).forEach((varName) => {
-          const variable = variables[varName];
-          const item = new vscode.CompletionItem(
-            varName,
-            vscode.CompletionItemKind.Variable
-          );
+        // 检查是否在变量赋值语句中
+        const assignmentMatch = textBeforeCursor.match(
+          /^\s*([A-Za-z][A-Za-z0-9_]*)\s*=\s*(.*)$/
+        );
 
-          item.detail = variable.section;
-          item.documentation = new vscode.MarkdownString(variable.description);
+        if (assignmentMatch) {
+          // 在等号后面，提供变量值的补全
+          const variableName = assignmentMatch[1].trim();
+          const variable = variables[variableName];
 
-          // 添加插入文本
-          if (variable.default) {
-            item.insertText = `${varName} = ${variable.default}`;
-          } else {
-            item.insertText = `${varName} = `;
+          if (variable) {
+            // 如果变量有预定义选项，提供这些选项
+            if (variable.options && variable.options.length > 0) {
+              variable.options.forEach((option) => {
+                const item = new vscode.CompletionItem(
+                  option.name,
+                  vscode.CompletionItemKind.Value
+                );
+                item.detail = option.value;
+                item.documentation = new vscode.MarkdownString(
+                  `**${variableName}** 的可选值`
+                );
+                item.insertText = option.name;
+                completionItems.push(item);
+              });
+            }
+
+            // 如果变量有默认值，也提供默认值选项
+            if (variable.default) {
+              const item = new vscode.CompletionItem(
+                variable.default,
+                vscode.CompletionItemKind.Value
+              );
+              item.detail = "默认值";
+              item.documentation = new vscode.MarkdownString(
+                `**${variableName}** 的默认值`
+              );
+              item.insertText = variable.default;
+              completionItems.push(item);
+            }
+
+            // 根据变量类型提供一些常见值
+            switch (variable.type) {
+              case "logical":
+                ["true", "false", "yes", "no"].forEach((value) => {
+                  const item = new vscode.CompletionItem(
+                    value,
+                    vscode.CompletionItemKind.Value
+                  );
+                  item.detail = "逻辑值";
+                  item.documentation = new vscode.MarkdownString(
+                    `**${variableName}** 的逻辑值选项`
+                  );
+                  item.insertText = value;
+                  completionItems.push(item);
+                });
+                break;
+            }
           }
+        } else {
+          // 不在赋值语句中，提供变量名的补全
+          Object.keys(variables).forEach((varName) => {
+            const variable = variables[varName];
+            const item = new vscode.CompletionItem(
+              varName,
+              vscode.CompletionItemKind.Variable
+            );
 
-          completionItems.push(item);
-        });
+            item.detail = variable.section;
+            item.documentation = new vscode.MarkdownString(
+              variable.description
+            );
+
+            // 添加插入文本
+            if (variable.default) {
+              item.insertText = `${varName} = ${variable.default}`;
+            } else {
+              item.insertText = `${varName} = `;
+            }
+
+            completionItems.push(item);
+          });
+        }
 
         return completionItems;
       },
-    }
+    },
+    "=",
+    " " // 在等号和空格后触发补全
   );
 
   // 注册代码操作提供器（快速修复）
@@ -396,49 +436,9 @@ function activate(context) {
             const assignment = parseVariableAssignment(line.text);
 
             if (assignment) {
-              // 如果是未知变量，提供建议的变量名
-              if (!variables[assignment.variableName]) {
-                const suggestions = Object.keys(variables)
-                  .filter(
-                    (name) =>
-                      name
-                        .toLowerCase()
-                        .includes(assignment.variableName.toLowerCase()) ||
-                      assignment.variableName
-                        .toLowerCase()
-                        .includes(name.toLowerCase())
-                  )
-                  .slice(0, 5);
-
-                suggestions.forEach((suggestion) => {
-                  const action = new vscode.CodeAction(
-                    `替换为 '${suggestion}'`,
-                    vscode.CodeActionKind.QuickFix
-                  );
-
-                  action.edit = new vscode.WorkspaceEdit();
-                  action.edit.replace(
-                    document.uri,
-                    new vscode.Range(
-                      new vscode.Position(
-                        diagnostic.range.start.line,
-                        assignment.varStartPos
-                      ),
-                      new vscode.Position(
-                        diagnostic.range.start.line,
-                        assignment.varEndPos
-                      )
-                    ),
-                    suggestion
-                  );
-
-                  action.diagnostics = [diagnostic];
-                  codeActions.push(action);
-                });
-              }
-              // 如果是无效值，提供有效选项
-              else {
-                const variable = variables[assignment.variableName];
+              // 只处理无效变量值的情况（变量存在但值无效）
+              const variable = variables[assignment.variableName];
+              if (variable) {
                 if (variable.options && variable.options.length > 0) {
                   // 提供前几个单个选项
                   variable.options.slice(0, 5).forEach((option) => {
