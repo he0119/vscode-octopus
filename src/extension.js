@@ -58,6 +58,40 @@ function logError(error, context = '') {
 }
 
 /**
+ * 根据变量的 Section 和 Name 生成文档 URL
+ * @param {string} section 变量所属的章节
+ * @param {string} name 变量名称
+ * @returns {string} 生成的文档 URL
+ */
+function generateDocUrl(section, name) {
+  if (!section || !name) {
+    return null;
+  }
+
+  try {
+    // 基础 URL
+    const baseUrl = 'https://octopus-code.org/documentation/14/variables/';
+
+    // 处理 Section：将 :: 替换为 /，转为小写，空格替换为下划线
+    const processedSection = section
+      .replace(/::/g, '/')
+      .toLowerCase()
+      .replace(/\s+/g, '_');
+
+    // 处理 Name：转为小写
+    const processedName = name.toLowerCase();
+
+    // 拼接完整 URL
+    const docUrl = `${baseUrl}${processedSection}/${processedName}/`;
+
+    return docUrl;
+  } catch (error) {
+    logError(error, `生成文档 URL 时出错 (Section: ${section}, Name: ${name})`);
+    return null;
+  }
+}
+
+/**
  * 安全执行函数，包含异常处理
  * @param {Function} fn 要执行的函数
  * @param {string} context 执行上下文描述
@@ -400,7 +434,7 @@ function activate(context) {
           if (!wordRange) return;
 
           const word = document.getText(wordRange);
-          const variable = variables[word];
+          const variable = variables[word.toLowerCase()];
 
           if (!variable) return;
 
@@ -412,10 +446,11 @@ function activate(context) {
           // 添加变量名作为标题
           markdown.appendMarkdown(`## ${variable.Name || word}\n\n`);
 
-          // 添加文档链接
-          if (variable.docUrl) {
+          // 生成并添加文档链接
+          const docUrl = variable.docUrl || generateDocUrl(variable.Section, variable.Name);
+          if (docUrl) {
             markdown.appendMarkdown(
-              `[📖 查看在线文档](${variable.docUrl})\n\n---\n\n`
+              `[📖 查看在线文档](${docUrl})\n\n---\n\n`
             );
           }
 
@@ -479,8 +514,11 @@ function activate(context) {
               const variable = variables[Object.keys(variables).find(key =>
                 variables[key].Name === item.label || key === item.label
               )];
-              if (variable && variable.docUrl) {
-                vscode.env.openExternal(vscode.Uri.parse(variable.docUrl));
+              if (variable) {
+                const docUrl = variable.docUrl || generateDocUrl(variable.Section, variable.Name);
+                if (docUrl) {
+                  vscode.env.openExternal(vscode.Uri.parse(docUrl));
+                }
               }
               quickPick.hide();
             }
