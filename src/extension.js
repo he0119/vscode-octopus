@@ -94,8 +94,11 @@ function generateDocUrl(section, name) {
   }
 
   try {
-    // 基础 URL
-    const baseUrl = 'https://octopus-code.org/documentation/14/variables/';
+    // 根据当前版本确定文档版本号（使用大版本号）
+    const docVersion = currentVersion.split('.')[0]; // 从 "14.1" 提取 "14"，从 "16.2" 提取 "16"
+
+    // 基础 URL - 根据版本动态生成
+    const baseUrl = `https://octopus-code.org/documentation/${docVersion}/variables/`;
 
     // 处理 Section：将 :: 替换为 /，转为小写，空格替换为下划线
     const processedSection = section
