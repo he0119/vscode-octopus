@@ -1,5 +1,5 @@
 const vscode = require("vscode");
-const variables = require("./variables.json");
+const variables = require("./varinfo-14.1.json");
 
 /**
  * 解析变量赋值语句
@@ -101,9 +101,9 @@ function validateVariableValue(variableName, value) {
   const cleanValue = value.replace(/['"]/g, ""); // 移除引号
 
   // 检查是否有预定义选项
-  if (variable.options && variable.options.length > 0) {
-    const validOptions = variable.options.map((opt) => opt.name.toLowerCase());
-    const validValues = variable.options.map((opt) => opt.value.toLowerCase());
+  if (variable.Options && variable.Options.length > 0) {
+    const validOptions = variable.Options.map((opt) => opt.Name.toLowerCase());
+    const validValues = variable.Options.map((opt) => opt.Value.toLowerCase());
 
     // 支持加号连接的选项（如 "lda_x + lda_c_pz_mod"）
     if (cleanValue.includes("+")) {
@@ -121,10 +121,10 @@ function validateVariableValue(variableName, value) {
         return {
           isValid: false,
           message: `无效的选项: ${invalidParts.join(", ")}`,
-          suggestion: `可选值: ${variable.options
-            .map((opt) => opt.name)
+          suggestion: `可选值: ${variable.Options
+            .map((opt) => opt.Name)
             .slice(0, 10)
-            .join(", ")}${variable.options.length > 10 ? "..." : ""}`,
+            .join(", ")}${variable.Options.length > 10 ? "..." : ""}`,
         };
       }
     } else {
@@ -136,10 +136,10 @@ function validateVariableValue(variableName, value) {
         return {
           isValid: false,
           message: `无效的值 '${cleanValue}'`,
-          suggestion: `可选值: ${variable.options
-            .map((opt) => opt.name)
+          suggestion: `可选值: ${variable.Options
+            .map((opt) => opt.Name)
             .slice(0, 10)
-            .join(", ")}${variable.options.length > 10 ? "..." : ""}`,
+            .join(", ")}${variable.Options.length > 10 ? "..." : ""}`,
         };
       }
     }
@@ -147,13 +147,13 @@ function validateVariableValue(variableName, value) {
   }
 
   // 根据类型验证值
-  switch (variable.type) {
+  switch (variable.Type) {
     case "integer":
       if (!/^-?\d+$/.test(cleanValue)) {
         return {
           isValid: false,
           message: `'${cleanValue}' 不是有效的整数`,
-          suggestion: `期望整数值，如: ${variable.default || "1"}`,
+          suggestion: `期望整数值，如: ${variable.Default ? variable.Default[0] : "1"}`,
         };
       }
       break;
@@ -170,7 +170,7 @@ function validateVariableValue(variableName, value) {
         return {
           isValid: false,
           message: `'${cleanValue}' 不是有效的浮点数或数学表达式`,
-          suggestion: `期望浮点数或数学表达式，如: ${variable.default || "1.0"} 或 3.5 * angstrom`,
+          suggestion: `期望浮点数或数学表达式，如: ${variable.Default ? variable.Default[0] : "1.0"} 或 3.5 * angstrom`,
         };
       }
       break;
@@ -306,7 +306,7 @@ function activate(context) {
       markdown.supportHtml = true;
 
       // 添加变量名作为标题
-      markdown.appendMarkdown(`## ${word}\n\n`);
+      markdown.appendMarkdown(`## ${variable.Name || word}\n\n`);
 
       // 添加文档链接
       if (variable.docUrl) {
@@ -316,26 +316,28 @@ function activate(context) {
       }
 
       // 添加基本信息
-      if (variable.type) {
-        markdown.appendMarkdown(`**类型**: ${variable.type}\n\n`);
+      if (variable.Type) {
+        markdown.appendMarkdown(`**类型**: ${variable.Type}\n\n`);
       }
-      if (variable.default) {
-        markdown.appendMarkdown(`**默认值**: \`${variable.default}\`\n\n`);
+      if (variable.Default) {
+        const defaultValue = Array.isArray(variable.Default) ? variable.Default.join(', ') : variable.Default;
+        markdown.appendMarkdown(`**默认值**: \`${defaultValue}\`\n\n`);
       }
-      if (variable.section) {
-        markdown.appendMarkdown(`**章节**: ${variable.section}\n\n`);
+      if (variable.Section) {
+        markdown.appendMarkdown(`**章节**: ${variable.Section}\n\n`);
       }
 
       // 添加描述
-      if (variable.description) {
-        markdown.appendMarkdown(`**描述**: ${variable.description}\n\n`);
+      if (variable.Description) {
+        const description = Array.isArray(variable.Description) ? variable.Description.join(' ') : variable.Description;
+        markdown.appendMarkdown(`**描述**: ${description}\n\n`);
       }
 
       // 添加选项（如果有）
-      if (variable.options && variable.options.length > 0) {
+      if (variable.Options && variable.Options.length > 0) {
         markdown.appendMarkdown(`**可选值**:\n\n`);
-        variable.options.forEach((option) => {
-          markdown.appendMarkdown(`- \`${option.name}\` (${option.value})\n`);
+        variable.Options.forEach((option) => {
+          markdown.appendMarkdown(`- \`${option.Name}\` (${option.Value})\n`);
         });
         markdown.appendMarkdown(`\n`);
       }
@@ -349,11 +351,18 @@ function activate(context) {
     "octopus.showVariables",
     () => {
       const quickPick = vscode.window.createQuickPick();
-      quickPick.items = Object.keys(variables).map((name) => ({
-        label: name,
-        description: variables[name].section,
-        detail: variables[name].description.substring(0, 100) + "...",
-      }));
+      quickPick.items = Object.keys(variables).map((name) => {
+        const variable = variables[name];
+        const description = Array.isArray(variable.Description) ? 
+          variable.Description.join(' ').substring(0, 100) + "..." : 
+          (variable.Description ? variable.Description.substring(0, 100) + "..." : "");
+        
+        return {
+          label: variable.Name || name,
+          description: variable.Section,
+          detail: description,
+        };
+      });
 
       quickPick.placeholder = "搜索 Octopus 变量...";
       quickPick.matchOnDescription = true;
@@ -361,8 +370,10 @@ function activate(context) {
 
       quickPick.onDidChangeSelection(([item]) => {
         if (item) {
-          const variable = variables[item.label];
-          if (variable.docUrl) {
+          const variable = variables[Object.keys(variables).find(key => 
+            variables[key].Name === item.label || key === item.label
+          )];
+          if (variable && variable.docUrl) {
             vscode.env.openExternal(vscode.Uri.parse(variable.docUrl));
           }
           quickPick.hide();
@@ -395,37 +406,38 @@ function activate(context) {
 
           if (variable) {
             // 如果变量有预定义选项，提供这些选项
-            if (variable.options && variable.options.length > 0) {
-              variable.options.forEach((option) => {
+            if (variable.Options && variable.Options.length > 0) {
+              variable.Options.forEach((option) => {
                 const item = new vscode.CompletionItem(
-                  option.name,
+                  option.Name,
                   vscode.CompletionItemKind.Value
                 );
-                item.detail = option.value;
+                item.detail = option.Value;
                 item.documentation = new vscode.MarkdownString(
                   `**${variableName}** 的可选值`
                 );
-                item.insertText = option.name;
+                item.insertText = option.Name;
                 completionItems.push(item);
               });
             }
 
             // 如果变量有默认值，也提供默认值选项
-            if (variable.default) {
+            if (variable.Default) {
+              const defaultValue = Array.isArray(variable.Default) ? variable.Default[0] : variable.Default;
               const item = new vscode.CompletionItem(
-                variable.default,
+                defaultValue,
                 vscode.CompletionItemKind.Value
               );
               item.detail = "默认值";
               item.documentation = new vscode.MarkdownString(
                 `**${variableName}** 的默认值`
               );
-              item.insertText = variable.default;
+              item.insertText = defaultValue;
               completionItems.push(item);
             }
 
             // 根据变量类型提供一些常见值
-            switch (variable.type) {
+            switch (variable.Type) {
               case "logical":
                 ["true", "false", "yes", "no"].forEach((value) => {
                   const item = new vscode.CompletionItem(
@@ -447,20 +459,24 @@ function activate(context) {
           Object.keys(variables).forEach((varName) => {
             const variable = variables[varName];
             const item = new vscode.CompletionItem(
-              varName,
+              variable.Name || varName,
               vscode.CompletionItemKind.Variable
             );
 
-            item.detail = variable.section;
-            item.documentation = new vscode.MarkdownString(
-              variable.description
-            );
+            item.detail = variable.Section;
+            const description = Array.isArray(variable.Description) ? 
+              variable.Description.join(' ') : 
+              (variable.Description || '');
+            item.documentation = new vscode.MarkdownString(description);
 
             // 添加插入文本
-            if (variable.default) {
-              item.insertText = `${varName} = ${variable.default}`;
+            const defaultValue = variable.Default ? 
+              (Array.isArray(variable.Default) ? variable.Default[0] : variable.Default) : 
+              '';
+            if (defaultValue) {
+              item.insertText = `${variable.Name || varName} = ${defaultValue}`;
             } else {
-              item.insertText = `${varName} = `;
+              item.insertText = `${variable.Name || varName} = `;
             }
 
             completionItems.push(item);
@@ -491,11 +507,11 @@ function activate(context) {
               // 只处理无效变量值的情况（变量存在但值无效）
               const variable = variables[assignment.variableName];
               if (variable) {
-                if (variable.options && variable.options.length > 0) {
+                if (variable.Options && variable.Options.length > 0) {
                   // 提供前几个单个选项
-                  variable.options.slice(0, 5).forEach((option) => {
+                  variable.Options.slice(0, 5).forEach((option) => {
                     const action = new vscode.CodeAction(
-                      `设置为 '${option.name}'`,
+                      `设置为 '${option.Name}'`,
                       vscode.CodeActionKind.QuickFix
                     );
 
@@ -512,16 +528,17 @@ function activate(context) {
                           assignment.valueEndPos
                         )
                       ),
-                      option.name
+                      option.Name
                     );
 
                     action.diagnostics = [diagnostic];
                     codeActions.push(action);
                   });
-                } else if (variable.default) {
+                } else if (variable.Default) {
                   // 提供默认值
+                  const defaultValue = Array.isArray(variable.Default) ? variable.Default[0] : variable.Default;
                   const action = new vscode.CodeAction(
-                    `设置为默认值 '${variable.default}'`,
+                    `设置为默认值 '${defaultValue}'`,
                     vscode.CodeActionKind.QuickFix
                   );
 
@@ -538,7 +555,7 @@ function activate(context) {
                         assignment.valueEndPos
                       )
                     ),
-                    variable.default
+                    defaultValue
                   );
 
                   action.diagnostics = [diagnostic];
