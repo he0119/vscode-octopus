@@ -9,12 +9,8 @@ try {
   console.log("1️⃣ 解析 Octopus 变量信息...");
   execSync("node scripts/parse-varinfo.js", { stdio: "inherit" });
 
-  // 步骤 2: 更新语法高亮
-  console.log("\n2️⃣ 更新语法高亮文件...");
-  execSync("node scripts/update-syntax.js", { stdio: "inherit" });
-
-  // 步骤 3: 运行测试
-  console.log("\n3️⃣ 运行测试...");
+  // 步骤 2: 运行测试
+  console.log("\n2️⃣ 运行测试...");
   execSync("node scripts/test-plugin.js", { stdio: "inherit" });
 
   console.log("\n✅ 构建完成！");

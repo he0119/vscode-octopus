@@ -94,13 +94,6 @@ function generateVariableMap(variables) {
   return map;
 }
 
-/**
- * 生成语法高亮的关键词列表
- */
-function generateKeywords(variables) {
-  return variables.map((v) => v.name);
-}
-
 // 执行解析
 console.log("解析 varinfo_orig 文件...");
 const variables = parseVarinfo();
@@ -118,11 +111,5 @@ if (!fs.existsSync(srcDir)) {
 
 fs.writeFileSync(outputPath, JSON.stringify(variableMap, null, 2));
 console.log(`变量映射已保存到: ${outputPath}`);
-
-// 生成关键词列表
-const keywords = generateKeywords(variables);
-const keywordsPath = path.join(__dirname, "..", "src", "keywords.json");
-fs.writeFileSync(keywordsPath, JSON.stringify(keywords, null, 2));
-console.log(`关键词列表已保存到: ${keywordsPath}`);
 
 console.log("解析完成！");

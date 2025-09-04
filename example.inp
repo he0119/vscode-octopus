@@ -28,10 +28,20 @@ OutputFormat = axis_x
 %TDOutput
  multipoles
  laser
+ energy
 %
 
 # System coordinates
 %Coordinates
  "H" | 0.0 | 0.0 | 0.0
  "H" | 0.0 | 0.0 | 1.4
+%
+
+# More block examples
+%KPoints
+ 0.0 | 0.0 | 0.0 | 1.0
+%
+
+%Species
+ "H" | species_pseudo | pseudopotential
 %

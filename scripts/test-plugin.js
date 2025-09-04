@@ -7,7 +7,6 @@ console.log("=== Octopus 插件测试 ===\n");
 console.log("1. 检查生成的文件...");
 const requiredFiles = [
   "src/variables.json",
-  "src/keywords.json",
   "src/extension.js",
   "syntaxes/octopus.tmLanguage.json",
 ];
@@ -33,18 +32,9 @@ console.log("\n2. 检查变量数量...");
 const variables = JSON.parse(
   fs.readFileSync(path.join(__dirname, "..", "src", "variables.json"), "utf8")
 );
-const keywords = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "..", "src", "keywords.json"), "utf8")
-);
 
 console.log(`   变量映射: ${Object.keys(variables).length} 个变量`);
-console.log(`   关键词列表: ${keywords.length} 个关键词`);
-
-if (Object.keys(variables).length !== keywords.length) {
-  console.log("   ⚠️  变量数量不匹配");
-} else {
-  console.log("   ✓ 变量数量匹配");
-}
+console.log(`   语法使用通用模式匹配（不再硬编码变量列表）`);
 
 // 测试 3: 检查几个重要变量
 console.log("\n3. 检查重要变量...");
