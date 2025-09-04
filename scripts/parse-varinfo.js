@@ -79,7 +79,8 @@ function generateVariableMap(variables) {
   variables.forEach((variable) => {
     // 生成文档 URL
     const sectionPath = variable.section.toLowerCase().replace(/::/g, "/");
-    const docUrl = `https://octopus-code.org/documentation/14/variables/${sectionPath}/`;
+    const variableName = variable.name.toLowerCase();
+    const docUrl = `https://octopus-code.org/documentation/14/variables/${sectionPath}/${variableName}/`;
 
     map[variable.name] = {
       type: variable.type,
