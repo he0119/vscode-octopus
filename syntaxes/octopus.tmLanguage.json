@@ -34,11 +34,6 @@
           "name": "comment.line.number-sign.octopus",
           "match": "#.*$",
           "comment": "Line comments starting with #"
-        },
-        {
-          "name": "comment.line.percent.octopus",
-          "match": "%.*$",
-          "comment": "Line comments starting with %"
         }
       ]
     },
@@ -90,9 +85,46 @@
           "comment": "Boolean values"
         },
         {
-          "name": "storage.type.block.octopus",
-          "match": "^\\s*%.*",
-          "comment": "Block definitions"
+          "name": "meta.block.octopus",
+          "begin": "^\\s*(%)(\\w+)\\s*$",
+          "end": "^\\s*%\\s*$",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.block.begin.octopus"
+            },
+            "2": {
+              "name": "variable.parameter.octopus"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.block.end.octopus"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#block-content"
+            }
+          ],
+          "comment": "Block definitions with % prefix and % suffix"
+        }
+      ]
+    },
+    "block-content": {
+      "patterns": [
+        {
+          "name": "variable.parameter.octopus",
+          "match": "\\b[A-Za-z][A-Za-z0-9_]*\\b",
+          "comment": "Block content variables"
+        },
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#strings"
+        },
+        {
+          "include": "#numbers"
         }
       ]
     }
