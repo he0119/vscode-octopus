@@ -1,43 +1,43 @@
-# Example Octopus input file
-# This demonstrates various Octopus parameters
+- Example Octopus input file
+- This demonstrates various Octopus parameters
 
-# System definition
+- System definition
 CalculationMode = gs
 UnitsOutput = eV_Angstrom
 
-# SCF parameters
+- SCF parameters
 MixingScheme = broyden
 Mixing = 0.3
 MaximumIter = 100
 ConvRelDens = 1e-6
 
-# Box and mesh
+- Box and mesh
 BoxShape = sphere
 Radius = 5.0
 Spacing = 0.25
 
-# Theory level
+- Theory level
 TheoryLevel = dft
 XCFunctional = lda_x + lda_c_vwn
 
-# Output
+- Output
 Output = wfs + density + potential
 OutputFormat = axis_x
 
-# Time-dependent calculations
+- Time-dependent calculations
 %TDOutput
  multipoles
  laser
  energy
 %
 
-# System coordinates
+- System coordinates
 %Coordinates
  "H" | 0.0 | 0.0 | 0.0
  "H" | 0.0 | 0.0 | 1.4
 %
 
-# More block examples
+- More block examples
 %KPoints
  0.0 | 0.0 | 0.0 | 1.0
 %

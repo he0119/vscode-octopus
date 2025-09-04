@@ -1,0 +1,73 @@
+- Test file for Octopus syntax highlighting
+- This file demonstrates various Octopus input syntax features
+
+- Include statement
+include geometry.oct
+
+- Scalar variable assignments
+CalculationMode = gs
+UnitsOutput = eV_Angstrom
+Mixing = 0.3
+MaximumIter = 100
+ConvRelDens = 1e-6
+
+- Mathematical expressions
+BoxRadius = 3.5 * angstrom
+Energy = 0.1 * eV
+WaveVector = 2 * pi / 5.0
+ComplexNumber = {1.0, 2.0}
+
+- Boolean values
+ExperimentalFeatures = yes
+DebugOutput = no
+VerboseOutput = true
+QuietMode = false
+
+- Mathematical functions
+Distance = sqrt(x^2 + y^2 + z^2)
+Gaussian = exp(-0.5 * r^2)
+Phase = sin(2*pi*x) + cos(2*pi*y)
+
+- Predefined constants
+SpeedOfLight = c
+PlanckConstant = 6.626e-34
+BoltzmannConstant = 8.617e-5 * eV / kelvin
+
+- Comparison and logical operators
+Condition1 = x > 0 && y <= 1.0
+Condition2 = (a == b) || (c != d)
+LogicalNot = !(x >= 0)
+
+- Block definitions
+%Coordinates
+ "H" | 0.0 | 0.0 | 0.0
+ "O" | 0.0 | 0.0 | 1.8*angstrom
+ "H" | 1.43 | 0.0 | -0.36
+%
+
+%Species
+ "H" | species_pseudo | set | hubbard_u | 5.0*eV
+ "O" | species_pseudo | set | hubbard_u | 7.0*eV
+%
+
+%TDOutput
+ multipoles
+ laser
+ energy
+ populations
+%
+
+%KPoints
+ 0.0 | 0.0 | 0.0 | 1.0
+ 0.5 | 0.0 | 0.0 | 0.5
+%
+
+- Complex mathematical expressions
+Potential = step(r - 2.0) * (r^2 - 4.0) + erf(r/sigma) * V0
+WaveFunction = exp(-r^2/(2*sigma^2)) * exp(i*k*x)
+Energy_Total = KineticEnergy + PotentialEnergy + ExchangeCorrelation
+
+- String values
+OutputDir = "results"
+PseudopotentialFile = '/path/to/pseudopotentials'
+LogFile = "octopus.log"

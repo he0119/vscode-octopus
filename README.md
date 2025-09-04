@@ -6,10 +6,18 @@
 
 ### 🎨 语法高亮
 
-- 高亮所有 758 个 Octopus 变量参数
-- 支持注释语法（# 和 %）
-- 高亮字符串、数字和布尔值
-- 支持块定义语法
+基于官方文档 (https://octopus-code.org/documentation/14/manual/basics/input_file/) 的完整语法支持：
+
+- **变量赋值**: `variable = expression` 格式高亮
+- **数字支持**: 整数、小数、科学计数法、复数 `{real, imag}`
+- **数学表达式**: sin, cos, sqrt, exp, log 等数学函数
+- **预定义常量**: pi, e, angstrom, eV, c 等物理常量
+- **运算符**: 算术 (+, -, \*, /, ^)、比较 (==, <=, >=)、逻辑 (&&, ||, !)
+- **布尔值**: yes/no, true/false
+- **字符串**: 单引号和双引号字符串
+- **注释**: - 行注释
+- **包含语句**: `include filename` 语法
+- **块定义**: `%blockname` ... `%` 语法，支持管道符 `|` 分隔
 
 ### 📖 文档支持
 
