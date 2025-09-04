@@ -3,6 +3,10 @@
   "displayName": "Octopus",
   "description": "Octopus input file language support with syntax highlighting, hover documentation, and documentation links",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/he0119/vscode-octopus.git"
+  },
   "engines": {
     "vscode": "^1.75.0"
   },

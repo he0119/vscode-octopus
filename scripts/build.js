@@ -11,7 +11,7 @@ try {
 
   // 步骤 2: 运行测试
   console.log("\n2️⃣ 运行测试...");
-  execSync("node scripts/test-plugin.js", { stdio: "inherit" });
+  execSync("node tests/test-plugin.js", { stdio: "inherit" });
 
   console.log("\n✅ 构建完成！");
   console.log("\n🎯 下一步:");

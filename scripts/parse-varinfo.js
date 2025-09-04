@@ -5,7 +5,7 @@ const path = require("path");
  * 解析 varinfo_orig 文件并提取 Octopus 参数信息
  */
 function parseVarinfo() {
-  const varinfoPath = path.join(__dirname, "..", "varinfo_orig");
+  const varinfoPath = path.join(__dirname, "varinfo_orig");
   const content = fs.readFileSync(varinfoPath, "utf8");
 
   const variables = [];
