@@ -1,0 +1,20 @@
+- Scientific notation tests
+ConvRelDens = 1e-6
+Mixing = 2.5e-3
+ConvRelDens = 1.5E+2
+ConvRelDens = -1e-4
+Mixing = 3.14159e0
+
+- Normal float values
+Mixing = 0.3
+ConvRelDens = 0.000001
+
+- Integer values
+MaximumIter = 100
+MaximumIter = -50
+
+- Comments are only lines starting with dash
+- This is a comment line
+ConvRelDens = 1e-6
+- Another comment
+Mixing = 0.3

@@ -17,7 +17,7 @@ Radius = 5.0
 Spacing = 0.25
 
 - Theory level
-TheoryLevel = dft
+TheoryLevel = hartree
 XCFunctional = lda_x + lda_c_vwn
 
 - Output

@@ -1,0 +1,49 @@
+- Test file for variable validation functionality
+
+- Valid variables with correct values
+CalculationMode = gs
+MixingScheme = broyden
+Mixing = 0.3
+MaximumIter = 100
+ConvRelDens = 1e-6
+BoxShape = sphere
+XCFunctional = lda_x + lda_c_pz_mod
+UnitsOutput = eV_Angstrom
+
+- Invalid variable names (should show errors)
+InvalidVariable = test
+CalculationMod = gs
+MixingSchem = broyden
+
+- Invalid values for known variables (should show errors)
+CalculationMode = invalid_mode
+MixingScheme = invalid_scheme
+Mixing = not_a_number
+MaximumIter = 10.5
+BoxShape = invalid_shape
+XCFunctional = invalid_functional + another_invalid
+
+- Logical variable tests
+MixingPreconditioner = true
+MixingPreconditioner = false
+MixingPreconditioner = invalid_logical
+
+- String variables (usually valid)
+UnitsOutput = eV_Angstrom
+UnitsOutput = "eV_Angstrom"
+
+- Only lines starting with dash are comments
+- This is a proper comment line
+CalculationMode = gs
+- Another comment line  
+MixingScheme = broyden
+
+- Block definitions should be ignored
+%TDOutput
+ multipoles
+ laser
+%
+
+%Coordinates
+ "H" | 0.0 | 0.0 | 0.0
+%

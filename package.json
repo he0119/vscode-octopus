@@ -37,11 +37,6 @@
     ],
     "commands": [
       {
-        "command": "octopus.openDocumentation",
-        "title": "打开 Octopus 文档",
-        "category": "Octopus"
-      },
-      {
         "command": "octopus.showVariables",
         "title": "显示所有 Octopus 变量",
         "category": "Octopus"
