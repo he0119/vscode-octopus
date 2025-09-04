@@ -33,7 +33,6 @@ Radius = 5.0
 ConvRelDens = 1e-6
 ConvAbsDens = 2.5e-3
 EigenSolverTolerance = 1.5E+2
-FilterPotentials = -1e-4
 TimeStep = 3.14159e0
 
 =====================================================

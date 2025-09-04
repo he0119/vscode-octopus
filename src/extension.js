@@ -28,6 +28,58 @@ function parseVariableAssignment(line) {
 }
 
 /**
+ * 预定义常量列表（与 tmLanguage.json 中保持一致）
+ */
+const PREDEFINED_CONSTANTS = [
+  'pi', 'e', 'i', 'angstrom', 'pm', 'picometer', 'nm', 'nanometer',
+  'ry', 'rydberg', 'eV', 'electronvolt', 'invcm', 'kelvin', 'kjoule_mol',
+  'kcal_mol', 'as', 'attosecond', 'fs', 'femtosecond', 'ps', 'picosecond',
+  'c', 'x', 'y', 'z', 'r', 'w', 't'
+];
+
+/**
+ * 数学函数列表（与 tmLanguage.json 中保持一致）
+ */
+const MATH_FUNCTIONS = [
+  'sqrt', 'exp', 'log', 'ln', 'log10', 'logb', 'logabs', 'arg', 'abs', 'abs2',
+  'conjg', 'inv', 'sin', 'cos', 'tan', 'cot', 'sec', 'csc', 'asin', 'acos',
+  'atan', 'acot', 'asec', 'acsc', 'atan2', 'sinh', 'cosh', 'tanh', 'coth',
+  'sech', 'csch', 'asinh', 'acosh', 'atanh', 'acoth', 'asech', 'acsch',
+  'min', 'max', 'step', 'erf', 'realpart', 'imagpart', 'floor', 'ceiling'
+];
+
+/**
+ * 检查值是否包含数学表达式
+ * @param {string} value
+ * @returns {boolean}
+ */
+function containsMathematicalExpression(value) {
+  // 检查是否包含数学运算符
+  if (/[+\-*\/^]/.test(value)) {
+    return true;
+  }
+
+  // 检查是否包含预定义常量
+  const constantRegex = new RegExp(`\\b(${PREDEFINED_CONSTANTS.join('|')})\\b`, 'i');
+  if (constantRegex.test(value)) {
+    return true;
+  }
+
+  // 检查是否包含数学函数
+  const functionRegex = new RegExp(`\\b(${MATH_FUNCTIONS.join('|')})\\s*\\(`, 'i');
+  if (functionRegex.test(value)) {
+    return true;
+  }
+
+  // 检查是否包含复数表示法 {real, imag}
+  if (/\{\s*[^}]+\s*,\s*[^}]+\s*\}/.test(value)) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * 验证变量值
  * @param {string} variableName
  * @param {string} value
@@ -103,11 +155,17 @@ function validateVariableValue(variableName, value) {
 
     case "float":
     case "real":
+      // 如果包含数学表达式，则认为是有效的
+      if (containsMathematicalExpression(cleanValue)) {
+        return { isValid: true };
+      }
+
+      // 否则验证是否为纯数字格式
       if (!/^-?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(cleanValue)) {
         return {
           isValid: false,
-          message: `'${cleanValue}' 不是有效的浮点数`,
-          suggestion: `期望浮点数，如: ${variable.default || "1.0"}`,
+          message: `'${cleanValue}' 不是有效的浮点数或数学表达式`,
+          suggestion: `期望浮点数或数学表达式，如: ${variable.default || "1.0"} 或 3.5 * angstrom`,
         };
       }
       break;
