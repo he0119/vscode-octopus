@@ -1,14 +1,15 @@
 {
   "name": "octopus",
   "displayName": "Octopus",
-  "description": "",
+  "description": "Octopus input file language support with syntax highlighting, hover documentation, and documentation links",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.54.0"
+    "vscode": "^1.75.0"
   },
   "categories": [
     "Programming Languages"
   ],
+  "main": "./src/extension.js",
   "contributes": {
     "languages": [
       {
@@ -18,7 +19,7 @@
           "octopus"
         ],
         "extensions": [
-          "inp"
+          ".inp"
         ],
         "configuration": "./language-configuration.json"
       }
@@ -29,6 +30,33 @@
         "scopeName": "source.octopus",
         "path": "./syntaxes/octopus.tmLanguage.json"
       }
-    ]
+    ],
+    "commands": [
+      {
+        "command": "octopus.openDocumentation",
+        "title": "打开 Octopus 文档",
+        "category": "Octopus"
+      },
+      {
+        "command": "octopus.showVariables",
+        "title": "显示所有 Octopus 变量",
+        "category": "Octopus"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "resourceLangId == octopus",
+          "command": "octopus.showVariables",
+          "group": "1_octopus"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "octopus.showVariables",
+          "when": "resourceLangId == octopus"
+        }
+      ]
+    }
   }
 }
