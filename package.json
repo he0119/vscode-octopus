@@ -25,6 +25,9 @@
         "extensions": [
           ".inp"
         ],
+        "filenames": [
+          "inp"
+        ],
         "configuration": "./language-configuration.json"
       }
     ],
@@ -59,10 +62,6 @@
     }
   },
   "scripts": {
-    "test": "node tests/test-suite.js",
-    "test:verbose": "node tests/test-suite.js --verbose",
-    "build": "node scripts/build.js",
-    "parse-varinfo": "node scripts/parse-varinfo.js",
     "package": "vsce package"
   },
   "devDependencies": {}

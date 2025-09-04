@@ -1,49 +1,77 @@
 # Octopus VSCode 扩展
 
-这是一个为 [Octopus](https://octopus-code.org/) 量子化学计算软件提供 VSCode 语言支持的扩展。
+这是一个为 [Octopus](https://octopus-code.org/) 量子化学计算软件提供 VSCode 语言支持的扩展，提供完整的语法高亮、智能补全、实时验证和文档集成功能。
 
 ## 功能特性
 
 ### 🎨 语法高亮
 
-基于官方文档 (https://octopus-code.org/documentation/14/manual/basics/input_file/) 的完整语法支持：
+基于 Octopus 14.1 官方文档的完整语法支持：
 
 - **变量赋值**: `variable = expression` 格式高亮
 - **数字支持**: 整数、小数、科学计数法、复数 `{real, imag}`
-- **数学表达式**: sin, cos, sqrt, exp, log 等数学函数
-- **预定义常量**: pi, e, angstrom, eV, c 等物理常量
+- **数学表达式**: sin, cos, sqrt, exp, log, erf 等 50+ 数学函数
+- **预定义常量**: pi, e, angstrom, eV, rydberg, c 等物理常量
 - **运算符**: 算术 (+, -, \*, /, ^)、比较 (==, <=, >=)、逻辑 (&&, ||, !)
-- **布尔值**: yes/no, true/false
+- **布尔值**: yes/no, true/false, .true./.false.
 - **字符串**: 单引号和双引号字符串
-- **注释**: - 行注释
+- **注释**: `#` 行注释
 - **包含语句**: `include filename` 语法
 - **块定义**: `%blockname` ... `%` 语法，支持管道符 `|` 分隔
 
-### 📖 文档支持
+### 📖 智能文档支持
 
 - **Hover 提示**: 鼠标悬停在变量上显示详细信息
   - 变量类型和默认值
   - 所属章节
   - 详细描述
-  - 可选值列表
+  - 可选值列表（如果有）
   - 直接链接到在线文档
+- **文档跳转**: 一键访问 Octopus 官方文档
 
-### 🔗 文档跳转
+### ⚡ 智能编辑功能
 
-- 点击变量可直接跳转到 Octopus 官方文档
-- 支持所有变量的文档链接格式：`https://octopus-code.org/documentation/14/variables/{section}/`
-
-### ⚡ 智能功能
-
-- **自动完成**: 输入时提供变量名建议
-- **命令面板**: `Ctrl+Shift+P` → "显示所有 Octopus 变量" 快速搜索所有可用变量
-- **右键菜单**: 在 `.inp` 文件中右键可快速访问变量列表
+- **自动完成**:
+  - 变量名智能提示（758+ 个变量）
+  - 变量值选项补全
+  - 默认值建议
+  - 类型相关的值建议
+- **实时验证**:
+  - 变量值类型检查
+  - 预定义选项验证
+  - 数学表达式识别
+  - 错误下划线标记
+- **快速修复**:
+  - 自动修正为有效选项
+  - 恢复默认值
+  - 智能建议
+- **命令功能**:
+  - `Ctrl+Shift+P` → "显示所有 Octopus 变量"
+  - 右键菜单快速访问
+  - 变量搜索和文档跳转
 
 ## 安装
 
-1. 在 VSCode 中打开插件
-2. 按 `F5` 启动开发模式，或者
-3. 打包安装：
+### 从源码安装
+
+1. 克隆仓库：
+
+   ```bash
+   git clone https://github.com/he0119/vscode-octopus.git
+   cd vscode-octopus
+   ```
+
+2. 安装依赖（如果需要）：
+
+   ```bash
+   npm install
+   ```
+
+3. 调试模式运行：
+   - 在 VSCode 中打开项目文件夹
+   - 按 `F5` 启动调试实例
+
+4. 打包安装：
 
    ```bash
    npm install -g vsce
@@ -51,119 +79,158 @@
    code --install-extension octopus-0.0.1.vsix
    ```
 
+### 从 VSCode 扩展市场安装
+
+> 即将发布到 VSCode 扩展市场
+
 ## 使用方法
 
-1. 创建或打开 `.inp` 文件
-2. 开始输入 Octopus 变量名，享受语法高亮和自动完成
-3. 鼠标悬停查看变量文档
-4. `Ctrl/Cmd + 点击` 变量跳转到在线文档
+1. **创建输入文件**: 创建或打开 `.inp` 文件
+2. **享受语法高亮**: 自动识别 Octopus 语法并高亮显示
+3. **智能补全**: 输入变量名时享受自动完成功能
+4. **查看文档**: 鼠标悬停查看变量详细信息
+5. **验证输入**: 实时检查变量值的有效性
+6. **快速修复**: 使用 `Ctrl+.` 快速修复错误值
+7. **访问文档**: 点击 hover 提示中的链接跳转到官方文档
 
 ## 示例
 
 ```octopus
-# SCF 参数设置
-MixingScheme = broyden  # 鼠标悬停查看详细说明
-Mixing = 0.3           # 支持自动完成
-MaximumIter = 100      # 点击跳转到文档
+# 计算模式设置
+CalculationMode = gs          # 基态计算
+TheoryLevel = dft             # 密度泛函理论
+
+# SCF 参数设置  
+MixingScheme = broyden        # Broyden 混合方案
+Mixing = 0.3                  # 混合参数
+MaximumIter = 100             # 最大迭代次数
+
+# 交换相关泛函
+XCFunctional = lda            # LDA 泛函
+
+# 网格设置
+Spacing = 0.25 * angstrom     # 支持数学表达式
+BoxShape = minimum            # 最小盒子形状
 
 # 系统定义
-CalculationMode = gs
-TheoryLevel = dft
+%Coordinates
+  "H" | 0.0 | 0.0 | 0.0
+  "H" | 0.0 | 0.0 | 1.4 * angstrom
+%
+
+# 输出控制
+Output = wfs + density        # 支持加号连接的选项
+OutputHow = cube + plane      # 多个输出格式
 ```
 
-## 支持的文件扩展名
+## 支持的文件类型
 
-- `.inp` - Octopus 输入文件
+- `.inp` - Octopus 输入文件（主要）
+- 任何标识为 `octopus` 语言的文件
 
 ## 变量覆盖范围
 
-插件支持 758 个 Octopus 变量，覆盖所有主要功能模块：
+插件支持 **758+ 个 Octopus 14.1 变量**，覆盖所有主要功能模块：
 
-- SCF 收敛参数
-- 网格和盒子设置
-- 理论级别和交换相关泛函
-- 时间相关计算
-- 输出控制
-- 系统定义
-- 以及更多...
+### 核心计算设置
 
-## 开发
+- **CalculationMode** - 计算模式（基态、时域等）
+- **TheoryLevel** - 理论级别（DFT、Hartree 等）
+- **XCFunctional** - 交换相关泛函
 
-插件基于 `varinfo_orig` 文件自动生成变量映射和语法高亮规则。
+### SCF 收敛控制
 
-更新变量信息：
+- **MaximumIter** - 最大 SCF 迭代次数
+- **ConvRelDens** - 密度收敛标准
+- **MixingScheme** - 密度混合方案
+- **Mixing** - 混合参数
 
-```bash
-node scripts/parse-varinfo.js
-node scripts/update-syntax.js
+### 网格和几何
+
+- **Spacing** - 网格间距
+- **BoxShape** - 盒子形状
+- **Radius** - 球形盒子半径
+
+### 时间演化
+
+- **TDTimeStep** - 时间步长
+- **TDMaxSteps** - 最大时间步数
+- **TDEvolutionMethod** - 时间演化方法
+
+### 输出控制
+
+- **Output** - 输出内容控制
+- **OutputHow** - 输出格式控制
+- **OutputInterval** - 输出间隔
+
+### 以及更多模块
+
+- 原子结构定义
+- 激发态计算
+- 光谱计算
+- 优化算法
+- 并行计算设置
+
+## 技术特性
+
+### 实时验证引擎
+
+- **类型检查**: 自动验证 integer、float、logical、string 类型
+- **选项验证**: 检查预定义选项的有效性
+- **数学表达式**: 识别并支持复杂数学表达式
+- **组合选项**: 支持用 `+` 连接的多选项验证
+
+### 智能补全系统
+
+- **上下文感知**: 根据变量位置提供相应补全
+- **类型匹配**: 根据变量类型提供合适的值建议
+- **默认值推荐**: 智能推荐官方默认值
+- **选项展示**: 完整显示所有可用选项
+
+### 文档集成
+
+- **在线链接**: 自动生成 Octopus 官方文档链接
+- **本地缓存**: 变量信息本地存储，快速响应
+- **版本同步**: 基于 Octopus 14.1 varinfo 数据
+
+## 开发和贡献
+
+### 项目结构
+
+```text
+vscode-octopus/
+├── src/
+│   ├── extension.js          # 主要扩展逻辑
+│   └── varinfo-14.1.json     # 自动生成的变量数据库
+├── syntaxes/
+│   └── octopus.tmLanguage.json  # TextMate 语法文件
+├── scripts/                  # 构建和解析脚本
+├── tests/                    # 测试文件和示例
+└── package.json             # 扩展清单
 ```
 
-## 贡献
+### 贡献指南
 
 欢迎提交 Issue 和 Pull Request！
 
+1. **Bug 报告**: 请提供具体的输入文件和错误描述
+2. **功能请求**: 说明需要的功能和使用场景
+3. **代码贡献**:
+   - Fork 项目并创建特性分支
+   - 添加测试覆盖新功能
+   - 确保所有测试通过
+   - 提交 Pull Request
+
+## 更新日志
+
+查看 [CHANGELOG.md](CHANGELOG.md) 了解详细的版本更新信息。
+
 ## 许可证
 
-MIT License
+MIT License - 查看 [LICENSE](LICENSE) 文件了解详情。
 
-## Features
+## 相关链接
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-- `myExtension.enable`: Enable/disable this extension.
-- `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-- Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-- Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-- Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-- [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-- [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+- [Octopus 官方网站](https://octopus-code.org/)
+- [Octopus 14.1 文档](https://octopus-code.org/documentation/14/)
+- [VSCode 扩展开发文档](https://code.visualstudio.com/api)
