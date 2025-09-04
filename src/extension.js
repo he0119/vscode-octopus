@@ -63,28 +63,6 @@ function activate(context) {
     },
   });
 
-  // 注册 Definition Provider（用于跳转到文档）
-  const definitionProvider = vscode.languages.registerDefinitionProvider(
-    "octopus",
-    {
-      provideDefinition(document, position, token) {
-        const wordRange = document.getWordRangeAtPosition(position);
-        if (!wordRange) return;
-
-        const word = document.getText(wordRange);
-        const variable = variables[word];
-
-        if (!variable || !variable.docUrl) return;
-
-        // 打开文档链接
-        vscode.env.openExternal(vscode.Uri.parse(variable.docUrl));
-
-        // 返回空数组表示没有本地定义
-        return [];
-      },
-    }
-  );
-
   // 注册命令：打开文档
   const openDocCommand = vscode.commands.registerCommand(
     "octopus.openDocumentation",
@@ -164,15 +142,9 @@ function activate(context) {
   // 将所有 disposables 添加到 context
   context.subscriptions.push(
     hoverProvider,
-    definitionProvider,
     openDocCommand,
     showVariablesCommand,
     completionProvider
-  );
-
-  // 显示激活消息
-  vscode.window.showInformationMessage(
-    "Octopus 插件已激活！现在可以 hover 查看变量文档，点击跳转到在线文档。"
   );
 }
 
