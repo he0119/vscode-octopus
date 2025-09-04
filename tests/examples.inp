@@ -1,17 +1,17 @@
-- Comprehensive Octopus Input Examples
-- This file contains all syntax features and test cases for the VS Code extension
-- Use this file to test syntax highlighting, validation, and autocompletion
+# Comprehensive Octopus Input Examples
+# This file contains all syntax features and test cases for the VS Code extension
+# Use this file to test syntax highlighting, validation, and autocompletion
 
 =====================================================
 = 1. BASIC SYNTAX ELEMENTS
 =====================================================
 
-- Comments start with dash and are highlighted
-- Include statements
+# Comments start with hash and are highlighted
+# Include statements
 include geometry.oct
 include parameters.inc
 
-- Basic variable assignments
+# Basic variable assignments
 CalculationMode = gs
 UnitsOutput = eV_Angstrom
 OutputFormat = axis_x
@@ -20,16 +20,16 @@ OutputFormat = axis_x
 = 2. NUMERIC VALUES AND SCIENTIFIC NOTATION
 =====================================================
 
-- Integer values
+# Integer values
 MaximumIter = 100
 MaxIterLinearSolver = 500
 
-- Float values
+# Float values
 Mixing = 0.3
 Spacing = 0.25
 Radius = 5.0
 
-- Scientific notation (various formats)
+# Scientific notation (various formats)
 ConvRelDens = 1e-6
 ConvAbsDens = 2.5e-3
 EigenSolverTolerance = 1.5E+2
@@ -39,7 +39,7 @@ TimeStep = 3.14159e0
 = 3. LOGICAL/BOOLEAN VALUES
 =====================================================
 
-- Different boolean representations
+# Different boolean representations
 MixingPreconditioner = true
 ExperimentalFeatures = false
 DebugOutput = yes
@@ -51,13 +51,13 @@ FastMode = FALSE
 = 4. STRING VALUES AND IDENTIFIERS
 =====================================================
 
-- String assignments
+# String assignments
 TheoryLevel = hartree_fock
 BoxShape = sphere
 MixingScheme = broyden
 SymmetryBreaking = symmetry_breaking
 
-- Output options
+# Output options
 Output = wfs + density + potential
 OutputEvery = 10
 
@@ -65,17 +65,17 @@ OutputEvery = 10
 = 5. MATHEMATICAL EXPRESSIONS
 =====================================================
 
-- Mathematical operations
+# Mathematical operations
 Radius = 3.5 * angstrom
 TotalEnergy = 0.1 * eV
 WaveVector = 2 * pi / 5.0
 Distance = sqrt(x^2 + y^2 + z^2)
 
-- Complex numbers
+# Complex numbers
 ComplexNumber = {1.0, 2.0}
 WaveFunction = {cos(k*x), sin(k*x)}
 
-- Trigonometric functions
+# Trigonometric functions
 Gaussian = exp(-0.5 * r^2)
 SinusoidalPotential = sin(2*pi*x) + cos(2*pi*y)
 Phase = atan2(y, x)
@@ -84,53 +84,53 @@ Phase = atan2(y, x)
 = 6. COMBINATION EXPRESSIONS (XC FUNCTIONALS)
 =====================================================
 
-- Valid XC functional combinations
+# Valid XC functional combinations
 XCFunctional = lda_x + lda_c_vwn
 XCFunctional = gga_x_pbe + gga_c_pbe
 XCFunctional = hyb_gga_xc_b3lyp
 XCFunctional = lda_x + lda_c_pz_mod
 
-- Multiple component functionals
+# Multiple component functionals
 XCFunctional = gga_x_pbe + gga_c_pbe + mgga_c_tpss
 
 =====================================================
 = 7. BLOCK SYNTAX
 =====================================================
 
-- TDOutput block
+# TDOutput block
 %TDOutput
  multipoles
  laser
  populations
 %
 
-- Coordinates block
+# Coordinates block
 %Coordinates
  "C" | 0.0 | 0.0 | 0.0
  "H" | 1.0 | 0.0 | 0.0
  "H" | -1.0 | 0.0 | 0.0
 %
 
-- Species block  
+# Species block  
 %Species
  "C" | species_pseudo | set | standard | tm
  "H" | species_pseudo | set | standard | tm
 %
 
-- KPoints block
+# KPoints block
 %KPoints
  0.0 | 0.0 | 0.0 | 1.0
  0.5 | 0.0 | 0.0 | 1.0
  0.0 | 0.5 | 0.0 | 1.0
 %
 
-- UserDefinedStates block
+# UserDefinedStates block
 %UserDefinedStates
  1 | 1 | 1 | "1s"
  2 | 1 | 2 | "2s" 
 %
 
-- TDFunctions block
+# TDFunctions block
 %TDFunctions
  "field1" | tdf_gaussian | 1.0 | 0.1 | 5.0
  "field2" | tdf_sine | 2.0 | 0.05 | 10.0
@@ -140,18 +140,18 @@ XCFunctional = gga_x_pbe + gga_c_pbe + mgga_c_tpss
 = 8. VALIDATION TEST CASES
 =====================================================
 
-- These should be highlighted as valid
+# These should be highlighted as valid
 CalculationMode = gs
 MixingScheme = broyden
 BoxShape = sphere
 TheoryLevel = hartree_fock
 
-- Examples that might show validation warnings (if implemented)
+# Examples that might show validation warnings (if implemented)
 InvalidVariable = test
 CalculationMod = gs
 MixingSchem = broyden
 
-- Invalid values for known variables (for testing)
+# Invalid values for known variables (for testing)
 CalculationMode = invalid_mode
 MixingScheme = invalid_scheme
 BoxShape = invalid_shape
@@ -160,7 +160,7 @@ BoxShape = invalid_shape
 = 9. COMPLEX REAL-WORLD EXAMPLES
 =====================================================
 
-- Ground state calculation setup
+# Ground state calculation setup
 CalculationMode = gs
 TheoryLevel = hartree_fock
 XCFunctional = gga_x_pbe + gga_c_pbe
@@ -169,17 +169,17 @@ Mixing = 0.3
 MaximumIter = 200
 ConvRelDens = 1e-8
 
-- Box and mesh parameters
+# Box and mesh parameters
 BoxShape = sphere
 Radius = 8.0
 Spacing = 0.18
 
-- Output configuration
+# Output configuration
 Output = wfs + density + potential + elf
 OutputFormat = cube + axis_x + axis_y + axis_z
 OutputEvery = 50
 
-- Time-dependent calculation
+# Time-dependent calculation
 %TDOutput
  multipoles
  laser
@@ -187,12 +187,12 @@ OutputEvery = 50
  td_occup
 %
 
-- Laser field definition
+# Laser field definition
 %TDFunctions
  "laser1" | tdf_gaussian | 0.1 | 0.5 | 5.0
 %
 
-- Complex geometry definition
+# Complex geometry definition
 %Coordinates
  "C" | 0.000000 | 0.000000 | 0.000000
  "H" | 1.089000 | 1.089000 | 1.089000  
@@ -205,11 +205,11 @@ OutputEvery = 50
 = 10. EDGE CASES AND SPECIAL SYNTAX
 =====================================================
 
-- Empty blocks
+# Empty blocks
 %EmptyBlock
 %
 
-- Blocks with mixed content
+# Blocks with mixed content
 %MixedContent
  option1
  "string_value"
@@ -217,20 +217,20 @@ OutputEvery = 50
  variable_name
 %
 
-- Very long variable names
+# Very long variable names
 VeryLongVariableNameThatShouldStillBeHighlightedCorrectly = value
 
-- Numbers with various formats  
+# Numbers with various formats  
 ScientificNotation1 = 1.23e-45
 ScientificNotation2 = 6.789E+123
 ScientificNotation3 = -2.5e10
 HexadecimalNotSupported = 0xFF
 
-- Complex nested expressions
+# Complex nested expressions
 ComplexExpression = sin(2*pi*x/L) * exp(-r^2/sigma^2) + offset
 
-- Unicode and special characters (if supported)
+# Unicode and special characters (if supported)
 GreekParameter = α_value
-Temperature = 300.0  // Kelvin
+Temperature = 300.0  # Kelvin
 
-- The end of comprehensive examples
+# The end of comprehensive examples

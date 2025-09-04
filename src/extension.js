@@ -8,12 +8,17 @@ const variables = require("./variables.json");
  */
 function parseVariableAssignment(line) {
   // 匹配 VariableName = value 格式
-  // 在 Octopus 中，只有以 - 开头的行才是注释，变量赋值行中不应该有行内注释
+  // 在 Octopus 中，# 字符开始的部分是注释，需要在解析值时排除
   const match = line.match(/^\s*([A-Za-z][A-Za-z0-9_]*)\s*=\s*(.+)$/);
   if (!match) return null;
 
   const variableName = match[1].trim();
-  const value = match[2].trim();
+  let fullValue = match[2];
+  
+  // 检查是否有行末注释（# 字符开始）
+  const commentIndex = fullValue.indexOf('#');
+  const value = commentIndex !== -1 ? fullValue.substring(0, commentIndex).trim() : fullValue.trim();
+  
   const startPos = line.indexOf(variableName);
   const valueStartPos = line.indexOf(value, startPos + variableName.length);
 

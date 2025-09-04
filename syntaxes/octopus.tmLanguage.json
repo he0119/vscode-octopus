@@ -51,9 +51,9 @@
     "comments": {
       "patterns": [
         {
-          "name": "comment.line.dash.octopus",
-          "match": "-.*$",
-          "comment": "Line comments starting with -"
+          "name": "comment.line.number-sign.octopus",
+          "match": "#.*$",
+          "comment": "Line comments starting with #"
         }
       ]
     },
@@ -71,6 +71,9 @@
             },
             "3": {
               "patterns": [
+                {
+                  "include": "#comments"
+                },
                 {
                   "include": "#strings"
                 },
