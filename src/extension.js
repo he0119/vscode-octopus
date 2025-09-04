@@ -27,6 +27,13 @@ function activate(context) {
       // 添加变量名作为标题
       markdown.appendMarkdown(`## ${word}\n\n`);
 
+      // 添加文档链接
+      if (variable.docUrl) {
+        markdown.appendMarkdown(
+          `[📖 查看在线文档](${variable.docUrl})\n\n---\n\n`
+        );
+      }
+
       // 添加基本信息
       if (variable.type) {
         markdown.appendMarkdown(`**类型**: ${variable.type}\n\n`);
@@ -50,11 +57,6 @@ function activate(context) {
           markdown.appendMarkdown(`- \`${option.name}\` (${option.value})\n`);
         });
         markdown.appendMarkdown(`\n`);
-      }
-
-      // 添加文档链接
-      if (variable.docUrl) {
-        markdown.appendMarkdown(`[📖 查看在线文档](${variable.docUrl})`);
       }
 
       return new vscode.Hover(markdown, wordRange);
