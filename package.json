@@ -41,22 +41,22 @@
     "commands": [
       {
         "command": "octopus.showVariables",
-        "title": "显示所有 Octopus 变量",
+        "title": "Show All Octopus Variables",
         "category": "Octopus"
       },
       {
         "command": "octopus.switchVersion",
-        "title": "切换 Octopus 版本",
+        "title": "Switch Octopus Version",
         "category": "Octopus"
       },
       {
         "command": "octopus.autoDetectVersion",
-        "title": "自动检测 Octopus 版本",
+        "title": "Auto Detect Octopus Version",
         "category": "Octopus"
       },
       {
         "command": "octopus.detectSystemVersion",
-        "title": "检测系统安装的 Octopus 版本",
+        "title": "Detect System Installed Octopus Version",
         "category": "Octopus"
       },
       {
@@ -76,15 +76,15 @@
             "16.2"
           ],
           "enumDescriptions": [
-            "Octopus 14.1 版本",
-            "Octopus 16.2 版本"
+            "Octopus 14.1 Version",
+            "Octopus 16.2 Version"
           ],
-          "description": "选择要使用的 Octopus 版本"
+          "description": "Select Octopus version to use"
         },
         "octopus.autoDetectVersion": {
           "type": "boolean",
           "default": false,
-          "description": "启用时，扩展会尝试自动检测当前文件或工作区的 Octopus 版本"
+          "description": "When enabled, the extension will try to automatically detect the Octopus version for the current file or workspace"
         },
         "octopus.inlayHints.enabled": {
           "type": "boolean",

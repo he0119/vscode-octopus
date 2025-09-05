@@ -1,10 +1,10 @@
 const vscode = require("vscode");
 
-// 创建输出通道
+// Create output channel
 let outputChannel;
 
 /**
- * 获取输出通道实例
+ * Get output channel instance
  * @returns {vscode.OutputChannel}
  */
 function getOutputChannel() {
@@ -15,9 +15,9 @@ function getOutputChannel() {
 }
 
 /**
- * 输出日志信息
- * @param {string} message 日志消息
- * @param {string} level 日志级别 (INFO, WARN, ERROR)
+ * Output log message
+ * @param {string} message Log message
+ * @param {string} level Log level (INFO, WARN, ERROR)
  */
 function log(message, level = "INFO") {
   const timestamp = new Date().toLocaleTimeString();
@@ -26,7 +26,7 @@ function log(message, level = "INFO") {
   const channel = getOutputChannel();
   channel.appendLine(formattedMessage);
 
-  // 根据日志级别决定是否在控制台也输出
+  // Decide whether to output to console based on log level
   if (level === "ERROR") {
     console.error(formattedMessage);
   } else if (level === "WARN") {
@@ -37,9 +37,9 @@ function log(message, level = "INFO") {
 }
 
 /**
- * 输出错误信息并显示通知
- * @param {Error|string} error 错误对象或错误消息
- * @param {string} context 错误发生的上下文
+ * Output error message and show notification
+ * @param {Error|string} error Error object or error message
+ * @param {string} context Context where the error occurred
  */
 function logError(error, context = "") {
   const errorMessage = error instanceof Error ? error.message : error;
@@ -49,19 +49,19 @@ function logError(error, context = "") {
   log(fullMessage, "ERROR");
 
   if (stack) {
-    log(`堆栈信息: ${stack}`, "ERROR");
+    log(`Stack trace: ${stack}`, "ERROR");
   }
 
-  // 显示用户友好的错误通知
+  // Show user-friendly error notification
   vscode.window.showErrorMessage(`Octopus extension error: ${errorMessage}`);
 }
 
 /**
- * 安全执行函数，包含异常处理
- * @param {Function} fn 要执行的函数
- * @param {string} context 执行上下文描述
- * @param {any} defaultValue 出错时返回的默认值，默认为 null
- * @returns {any} 函数执行结果，如果出错则返回 defaultValue
+ * Safely execute function with exception handling
+ * @param {Function} fn Function to execute
+ * @param {string} context Execution context description
+ * @param {any} defaultValue Default value to return on error, defaults to null
+ * @returns {any} Function execution result, returns defaultValue if error occurs
  */
 function safeExecute(fn, context, defaultValue = null) {
   try {
@@ -73,7 +73,7 @@ function safeExecute(fn, context, defaultValue = null) {
 }
 
 /**
- * 销毁输出通道
+ * Dispose output channel
  */
 function dispose() {
   if (outputChannel) {

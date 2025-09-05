@@ -32,7 +32,7 @@ function registerHoverProvider() {
         // Add version information
         markdown.appendMarkdown(`**Version**: Octopus ${currentVersion}\n\n`);
 
-        // 生成并添加文档链接
+        // Generate and add documentation link
         const docUrl = variable.docUrl || generateDocUrl(variable.Section, variable.Name);
         if (docUrl) {
           markdown.appendMarkdown(
@@ -40,7 +40,7 @@ function registerHoverProvider() {
           );
         }
 
-        // 添加基本信息
+        // Add basic information
         if (variable.Type) {
           markdown.appendMarkdown(`**Type**: ${variable.Type}\n\n`);
         }
@@ -52,13 +52,13 @@ function registerHoverProvider() {
           markdown.appendMarkdown(`**Section**: ${variable.Section}\n\n`);
         }
 
-        // 添加描述
+        // Add description
         if (variable.Description) {
           const description = Array.isArray(variable.Description) ? variable.Description.join(' ') : variable.Description;
           markdown.appendMarkdown(`**Description**: ${description}\n\n`);
         }
 
-        // 添加选项（如果有）
+        // Add options (if any)
         if (variable.Options && variable.Options.length > 0) {
           markdown.appendMarkdown(`**Valid Values**:\n\n`);
           variable.Options.forEach((option) => {

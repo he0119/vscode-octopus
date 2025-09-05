@@ -1,128 +1,128 @@
-# Octopus 多版本支持
+# Octopus Multi-Version Support
 
-这个VS Code扩展现在支持多个Octopus版本，包括14.1和16.2版本。
+This VS Code extension now supports multiple Octopus versions, including versions 14.1 and 16.2.
 
-## 功能特性
+## Features
 
-### 1. 版本选择
+### 1. Version Selection
 
-- 支持Octopus 14.1和16.2版本
-- 通过配置文件或命令面板切换版本
-- 实时加载对应版本的变量信息
+- Supports Octopus 14.1 and 16.2 versions
+- Switch versions through configuration file or command palette
+- Real-time loading of corresponding version variable information
 
-### 2. 自动版本检测
+### 2. Automatic Version Detection
 
-- **系统命令检测**：通过运行 `octopus --version` 检测系统安装的版本
-- **文件注释检测**：尝试从文件注释中检测版本信息
-- **工作区配置检测**：从工作区配置文件中读取版本
-- **项目级别设置**：支持项目级别的版本设置
+- **System command detection**: Detect system-installed version by running `octopus --version`
+- **File comment detection**: Try to detect version information from file comments
+- **Workspace configuration detection**: Read version from workspace configuration file
+- **Project-level settings**: Support project-level version settings
 
-## 使用方法
+## Usage
 
-### 方法1：通过设置配置版本
+### Method 1: Configure Version Through Settings
 
-1. 打开VS Code设置 (Ctrl+,)
-2. 搜索 "octopus.version"
-3. 选择要使用的Octopus版本（14.1 或 16.2）
+1. Open VS Code settings (Ctrl+,)
+2. Search for "octopus.version"
+3. Select the Octopus version to use (14.1 or 16.2)
 
-### 方法2：通过命令面板切换
+### Method 2: Switch Through Command Palette
 
-1. 打开命令面板 (Ctrl+Shift+P)
-2. 输入 "Octopus: 切换版本"
-3. 选择要使用的版本
+1. Open command palette (Ctrl+Shift+P)
+2. Type "Octopus: Switch Version"
+3. Select the version to use
 
-### 方法3：系统版本检测
+### Method 3: System Version Detection
 
-1. 打开命令面板 (Ctrl+Shift+P)
-2. 输入 "Octopus: 检测系统安装的版本"
-3. 扩展会运行 `octopus --version` 命令自动检测系统安装的版本
+1. Open command palette (Ctrl+Shift+P)
+2. Type "Octopus: Detect System Installed Version"
+3. Extension will run `octopus --version` command to automatically detect system-installed version
 
-### 方法4：综合自动检测
+### Method 4: Comprehensive Auto Detection
 
-1. 打开命令面板 (Ctrl+Shift+P)
-2. 输入 "Octopus: 自动检测版本"
-3. 扩展会按优先级尝试多种检测方法
+1. Open command palette (Ctrl+Shift+P)
+2. Type "Octopus: Auto Detect Version"
+3. Extension will try multiple detection methods by priority
 
-## 版本检测规则
+## Version Detection Rules
 
-扩展会按以下优先级尝试检测版本：
+Extension will try to detect version in the following priority order:
 
-1. **系统命令检测**：运行 `octopus --version` 获取系统安装的版本
-   - 最可靠的检测方法
-   - 获取当前系统实际安装的 Octopus 版本
-   - 输出格式：`octopus 16.2 (git commit 28271023a8)`
+1. **System command detection**: Run `octopus --version` to get system-installed version
+   - Most reliable detection method
+   - Get currently installed Octopus version on the system
+   - Output format: `octopus 16.2 (git commit 28271023a8)`
 
-2. **文件注释检测**：在.inp文件中查找如下格式的注释
+2. **File comment detection**: Look for comments in .inp files in the following format
 
    ```bash
    # Octopus version: 16.2
    % Octopus version 14.1
    ```
 
-3. **工作区配置文件检测**：查找以下文件中的版本信息
+3. **Workspace configuration file detection**: Look for version information in the following files
    - `octopus.conf`
    - `config.inp`
    - `version.txt`
    - `.octopus-version`
 
-4. **变量特征检测**：根据文件中使用的特定版本变量来判断
+4. **Variable feature detection**: Determine based on specific version variables used in the file
 
-## 配置选项
+## Configuration Options
 
-在VS Code设置中可以配置以下选项：
+The following options can be configured in VS Code settings:
 
-- `octopus.version`：手动选择Octopus版本（默认：14.1）
-- `octopus.autoDetectVersion`：是否启用自动版本检测（默认：false）
+- `octopus.version`: Manually select Octopus version (default: 14.1)
+- `octopus.autoDetectVersion`: Whether to enable automatic version detection (default: false)
 
-## 版本差异说明
+## Version Differences
 
 ### Octopus 14.1
 
-- 包含约42,973个变量定义
-- 适用于较早版本的Octopus项目
+- Contains approximately 42,973 variable definitions
+- Suitable for earlier Octopus projects
 
-### Octopus 16.2  
+### Octopus 16.2
 
-- 包含约44,898个变量定义
-- 包含最新的功能和变量
-- 适用于最新版本的Octopus项目
+- Contains approximately 44,898 variable definitions
+- Includes latest features and variables
+- Suitable for latest Octopus projects
 
-## 扩展功能
+## Extension Features
 
-无论使用哪个版本，都支持以下功能：
+Regardless of which version you use, the following features are supported:
 
-- **语法高亮**：Octopus输入文件的语法着色
-- **悬停文档**：鼠标悬停显示变量文档，包括当前版本信息
-- **自动完成**：变量名和值的智能补全
-- **错误检查**：实时验证变量值的有效性
-- **快速修复**：提供变量值修正建议
-- **变量浏览**：显示所有可用变量的列表
-- **在线文档链接**：根据当前版本自动生成正确的文档链接
+- **Syntax Highlighting**: Syntax coloring for Octopus input files
+- **Hover Documentation**: Show variable documentation on mouse hover, including current version information
+- **Auto-completion**: Intelligent completion for variable names and values
+- **Error Checking**: Real-time validation of variable value validity
+- **Quick Fixes**: Provide variable value correction suggestions
+- **Variable Browser**: Display list of all available variables
+- **Online Documentation Links**: Automatically generate correct documentation links based on current version
 
-## 开发者信息
+## Developer Information
 
-如需添加新版本支持：
+To add support for new versions:
 
-1. 在`src/`目录下添加新的`varinfo-{version}.json`文件
-2. 在`package.json`的`octopus.version`枚举中添加新版本
-3. 更新版本检测逻辑（如需要）
+1. Add new `varinfo-{version}.json` file in the `src/` directory
+2. Add new version to the `octopus.version` enum in `package.json`
+3. Update version detection logic (if needed)
 
-## 故障排除
+## Troubleshooting
 
-### 版本切换失败
+### Version Switching Failure
 
-- 确保对应版本的JSON文件存在
-- 查看输出面板中的错误信息
-- 尝试重新启动VS Code
+- Ensure the corresponding version JSON file exists
+- Check error information in the output panel
+- Try restarting VS Code
 
-### 自动检测不准确
+### Inaccurate Auto Detection
 
-- 手动在文件中添加版本注释
-- 使用手动版本切换功能
-- 在工作区设置中固定版本选择
+- Manually add version comment in the file
+- Use manual version switching feature
+- Fix version selection in workspace settings
 
-### 功能异常
+### Function Abnormalities
 
-- 检查输出面板的日志信息
-- 确认当前加载的版本是否正确
-- 重新加载窗口或重启VS Code
+- Check log information in the output panel
+- Confirm if the currently loaded version is correct
+- Reload window or restart VS Code
