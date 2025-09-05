@@ -14,6 +14,9 @@
   "categories": [
     "Programming Languages"
   ],
+  "keywords": [
+    "octopus"
+  ],
   "main": "./src/extension.js",
   "contributes": {
     "languages": [
