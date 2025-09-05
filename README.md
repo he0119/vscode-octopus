@@ -29,6 +29,27 @@
   - 直接链接到在线文档
 - **文档跳转**: 一键访问 Octopus 官方文档
 
+### 🏷️ Inlay Hints 变量标识
+
+**新功能！** 通过 inlay hints 直观区分变量类型：
+
+- **内置变量**: 显示 `[builtin]` ，表示 Octopus 官方变量
+- **用户变量**: 显示 `[user]` ，表示用户自定义变量
+- **智能提示**: 悬停显示变量详细信息和描述
+- **可配置样式**: 支持文本标识和表情符号两种显示模式
+- **灵活控制**: 可分别开关内置变量和用户变量的显示
+
+配置选项：
+
+```json
+{
+  "octopus.inlayHints.enabled": true,        // 启用/禁用 inlay hints
+  "octopus.inlayHints.showBuiltin": true,    // 显示内置变量标识
+  "octopus.inlayHints.showUser": true,       // 显示用户变量标识
+  "octopus.inlayHints.style": "text"         // "text" 或 "emoji"
+}
+```
+
 ### ⚡ 智能编辑功能
 
 - **自动完成**:
@@ -92,36 +113,47 @@
 5. **验证输入**: 实时检查变量值的有效性
 6. **快速修复**: 使用 `Ctrl+.` 快速修复错误值
 7. **访问文档**: 点击 hover 提示中的链接跳转到官方文档
+8. **变量标识**: 通过 inlay hints 区分内置变量和用户变量
+
+### 可用命令
+
+- **Octopus: 显示所有 Octopus 变量** - 列出当前版本支持的所有变量
+- **Octopus: 切换 Octopus 版本** - 在不同版本间切换
+- **Octopus: 自动检测 Octopus 版本** - 根据文件内容检测版本
+- **Octopus: 检测系统安装的 Octopus 版本** - 检测系统中安装的版本
+- **Octopus: 切换 Inlay Hints 显示** - 开启/关闭变量类型标识
 
 ## 示例
 
 ```octopus
 # 计算模式设置
-CalculationMode = gs          # 基态计算
-TheoryLevel = dft             # 密度泛函理论
+CalculationMode = gs          # [builtin] 基态计算
+TheoryLevel = dft             # [builtin] 密度泛函理论
 
 # SCF 参数设置  
-MixingScheme = broyden        # Broyden 混合方案
-Mixing = 0.3                  # 混合参数
-MaximumIter = 100             # 最大迭代次数
+MixingScheme = broyden        # [builtin] Broyden 混合方案
+Mixing = 0.3                  # [builtin] 混合参数
+MaximumIter = 100             # [builtin] 最大迭代次数
+
+# 用户自定义参数
+MyCustomRadius = 5.0          # [user] 用户定义的半径
+UserBoxSize = 10.0            # [user] 用户定义的盒子大小
 
 # 交换相关泛函
-XCFunctional = lda            # LDA 泛函
+XCFunctional = lda            # [builtin] LDA 泛函
 
 # 网格设置
-Spacing = 0.25 * angstrom     # 支持数学表达式
-BoxShape = minimum            # 最小盒子形状
+Spacing = 0.25 * angstrom     # [builtin] 支持数学表达式
+BoxShape = minimum            # [builtin] 最小盒子形状
 
 # 系统定义
 %Coordinates
   "H" | 0.0 | 0.0 | 0.0
   "H" | 0.0 | 0.0 | 1.4 * angstrom
 %
-
-# 输出控制
-Output = wfs + density        # 支持加号连接的选项
-OutputHow = cube + plane      # 多个输出格式
 ```
+
+> 注：示例中的 `[builtin]` 和 `[user]` 标识会在实际使用中以 inlay hints 的形式显示在变量名后面。
 
 ## 支持的文件类型
 

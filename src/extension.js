@@ -9,12 +9,14 @@ const { registerShowVariablesCommand } = require("./commands/showVariables");
 const { registerSwitchVersionCommand } = require("./commands/switchVersion");
 const { registerAutoDetectVersionCommand } = require("./commands/autoDetectVersion");
 const { registerDetectSystemVersionCommand } = require("./commands/detectSystemVersion");
+const { registerToggleInlayHintsCommand } = require("./commands/toggleInlayHints");
 
 // 导入提供者
 const { registerHoverProvider } = require("./providers/hoverProvider");
 const { registerCompletionProvider } = require("./providers/completionProvider");
 const { registerDiagnosticProvider } = require("./providers/diagnosticProvider");
 const { registerCodeActionProvider } = require("./providers/codeActionProvider");
+const { registerInlayHintsProvider } = require("./providers/inlayHintsProvider");
 
 /**
  * 激活插件
@@ -55,6 +57,8 @@ function activate(context) {
 
     const codeActionProvider = registerCodeActionProvider();
 
+    const inlayHintsProvider = registerInlayHintsProvider();
+
     // 注册命令（现在内部获取所需参数）
     const showVariablesCommand = registerShowVariablesCommand();
 
@@ -63,6 +67,8 @@ function activate(context) {
     const autoDetectVersionCommand = registerAutoDetectVersionCommand(updateDiagnostics);
 
     const detectSystemVersionCommand = registerDetectSystemVersionCommand(updateDiagnostics);
+
+    const toggleInlayHintsCommand = registerToggleInlayHintsCommand();
 
     // 监听配置变化
     const onConfigurationChange = vscode.workspace.onDidChangeConfiguration((event) => {
@@ -73,6 +79,8 @@ function activate(context) {
           if (loadVariables(newVersion)) {
             // 重新验证所有打开的文档
             vscode.workspace.textDocuments.forEach(updateDiagnostics);
+            // 触发 inlay hints 更新
+            vscode.commands.executeCommand('vscode.executeInlayHintProvider');
             vscode.window.showInformationMessage(
               `Octopus 版本已更新为 ${newVersion}`
             );
@@ -88,8 +96,10 @@ function activate(context) {
       switchVersionCommand,
       autoDetectVersionCommand,
       detectSystemVersionCommand,
+      toggleInlayHintsCommand,
       completionProvider,
       codeActionProvider,
+      inlayHintsProvider,
       diagnosticCollection,
       onDocumentChange,
       onDocumentOpen,

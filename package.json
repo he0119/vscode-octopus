@@ -58,6 +58,11 @@
         "command": "octopus.detectSystemVersion",
         "title": "检测系统安装的 Octopus 版本",
         "category": "Octopus"
+      },
+      {
+        "command": "octopus.toggleInlayHints",
+        "title": "Toggle Inlay Hints Display",
+        "category": "Octopus"
       }
     ],
     "configuration": {
@@ -80,6 +85,21 @@
           "type": "boolean",
           "default": false,
           "description": "启用时，扩展会尝试自动检测当前文件或工作区的 Octopus 版本"
+        },
+        "octopus.inlayHints.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable inlay hints to distinguish builtin and user-defined variables"
+        },
+        "octopus.inlayHints.showBuiltin": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show inlay hints for builtin variables"
+        },
+        "octopus.inlayHints.showUser": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show inlay hints for user-defined variables"
         }
       }
     },
@@ -104,6 +124,9 @@
         },
         {
           "command": "octopus.detectSystemVersion"
+        },
+        {
+          "command": "octopus.toggleInlayHints"
         }
       ]
     }
