@@ -1,98 +1,97 @@
-# Octopus VSCode 扩展
+# Octopus VSCode Extension
 
-这是一个为 [Octopus](https://octopus-code.org/) 量子化学计算软件提供 VSCode 语言支持的扩展，提供完整的语法高亮、智能补全、实时验证和文档集成功能。
+A VSCode extension that provides comprehensive language support for [Octopus](https://octopus-code.org/) quantum chemistry computational software, featuring complete syntax highlighting, intelligent completion, real-time validation, and documentation integration.
 
-## 功能特性
+## Features
 
-### 🎨 语法高亮
+### 🎨 Syntax Highlighting
 
-基于 Octopus 14.1 官方文档的完整语法支持：
+Complete syntax support based on official Octopus 14.1 documentation:
 
-- **变量赋值**: `variable = expression` 格式高亮
-- **数字支持**: 整数、小数、科学计数法、复数 `{real, imag}`
-- **数学表达式**: sin, cos, sqrt, exp, log, erf 等 50+ 数学函数
-- **预定义常量**: pi, e, angstrom, eV, rydberg, c 等物理常量
-- **运算符**: 算术 (+, -, \*, /, ^)、比较 (==, <=, >=)、逻辑 (&&, ||, !)
-- **布尔值**: yes/no, true/false, .true./.false.
-- **字符串**: 单引号和双引号字符串
-- **注释**: `#` 行注释
-- **包含语句**: `include filename` 语法
-- **块定义**: `%blockname` ... `%` 语法，支持管道符 `|` 分隔
+- **Variable Assignment**: `variable = expression` format highlighting
+- **Number Support**: Integers, decimals, scientific notation, complex numbers `{real, imag}`
+- **Mathematical Expressions**: sin, cos, sqrt, exp, log, erf and 50+ mathematical functions
+- **Predefined Constants**: pi, e, angstrom, eV, rydberg, c and other physical constants
+- **Operators**: Arithmetic (+, -, \*, /, ^), comparison (==, <=, >=), logical (&&, ||, !)
+- **Boolean Values**: yes/no, true/false, .true./.false.
+- **Strings**: Single and double quoted strings
+- **Comments**: `#` line comments
+- **Include Statements**: `include filename` syntax
+- **Block Definition**: `%blockname` ... `%` syntax with pipe separator `|` support
 
-### 📖 智能文档支持
+### 📖 Intelligent Documentation Support
 
-- **Hover 提示**: 鼠标悬停在变量上显示详细信息
-  - 变量类型和默认值
-  - 所属章节
-  - 详细描述
-  - 可选值列表（如果有）
-  - 直接链接到在线文档
-- **文档跳转**: 一键访问 Octopus 官方文档
+- **Hover Tips**: Display detailed information when hovering over variables
+  - Variable type and default values
+  - Section information
+  - Detailed descriptions
+  - Available options list (if any)
+  - Direct links to online documentation
+- **Documentation Navigation**: One-click access to official Octopus documentation
 
-### 🏷️ Inlay Hints 变量标识
+### 🏷️ Inlay Hints Variable Identification
 
-**新功能！** 通过 inlay hints 直观区分变量类型：
+**New Feature!** Visually distinguish variable types through inlay hints:
 
-- **内置变量**: 显示 `[builtin]` ，表示 Octopus 官方变量
-- **用户变量**: 显示 `[user]` ，表示用户自定义变量
-- **智能提示**: 悬停显示变量详细信息和描述
-- **可配置样式**: 支持文本标识和表情符号两种显示模式
-- **灵活控制**: 可分别开关内置变量和用户变量的显示
+- **Built-in Variables**: Display `[builtin]`, indicating official Octopus variables
+- **User Variables**: Display `[user]`, indicating user-defined variables
+- **Smart Tips**: Hover to show detailed variable information and descriptions
+- **Configurable Styles**: Support both text labels and emoji display modes
+- **Flexible Control**: Separately toggle display of built-in and user variables
 
-配置选项：
+Configuration options:
 
 ```json
 {
-  "octopus.inlayHints.enabled": true,        // 启用/禁用 inlay hints
-  "octopus.inlayHints.showBuiltin": true,    // 显示内置变量标识
-  "octopus.inlayHints.showUser": true,       // 显示用户变量标识
-  "octopus.inlayHints.style": "text"         // "text" 或 "emoji"
+  "octopus.inlayHints.enabled": true,        // Enable/disable inlay hints
+  "octopus.inlayHints.showBuiltin": true,    // Show built-in variable labels
+  "octopus.inlayHints.showUser": true,       // Show user variable labels
 }
 ```
 
-### ⚡ 智能编辑功能
+### ⚡ Intelligent Editing Features
 
-- **自动完成**:
-  - 变量名智能提示（758+ 个变量）
-  - 变量值选项补全
-  - 默认值建议
-  - 类型相关的值建议
-- **实时验证**:
-  - 变量值类型检查
-  - 预定义选项验证
-  - 数学表达式识别
-  - 错误下划线标记
-- **快速修复**:
-  - 自动修正为有效选项
-  - 恢复默认值
-  - 智能建议
-- **命令功能**:
-  - `Ctrl+Shift+P` → "显示所有 Octopus 变量"
-  - 右键菜单快速访问
-  - 变量搜索和文档跳转
+- **Auto Completion**:
+  - Smart variable name suggestions (758+ variables)
+  - Variable value option completion
+  - Default value recommendations
+  - Type-specific value suggestions
+- **Real-time Validation**:
+  - Variable value type checking
+  - Predefined option validation
+  - Mathematical expression recognition
+  - Error underline marking
+- **Quick Fixes**:
+  - Auto-correct to valid options
+  - Restore default values
+  - Smart suggestions
+- **Command Features**:
+  - `Ctrl+Shift+P` → "Show All Octopus Variables"
+  - Right-click menu quick access
+  - Variable search and documentation navigation
 
-## 安装
+## Installation
 
-### 从源码安装
+### Install from Source
 
-1. 克隆仓库：
+1. Clone the repository:
 
    ```bash
    git clone https://github.com/he0119/vscode-octopus.git
    cd vscode-octopus
    ```
 
-2. 安装依赖（如果需要）：
+2. Install dependencies (if needed):
 
    ```bash
    npm install
    ```
 
-3. 调试模式运行：
-   - 在 VSCode 中打开项目文件夹
-   - 按 `F5` 启动调试实例
+3. Run in debug mode:
+   - Open the project folder in VSCode
+   - Press `F5` to launch debug instance
 
-4. 打包安装：
+4. Package and install:
 
    ```bash
    npm install -g vsce
@@ -100,169 +99,188 @@
    code --install-extension octopus-0.0.1.vsix
    ```
 
-### 从 VSCode 扩展市场安装
+### Install from VSCode Extension Marketplace
 
-> 即将发布到 VSCode 扩展市场
+> Coming soon to VSCode Extension Marketplace
 
-## 使用方法
+## Usage
 
-1. **创建输入文件**: 创建或打开 `.inp` 文件
-2. **享受语法高亮**: 自动识别 Octopus 语法并高亮显示
-3. **智能补全**: 输入变量名时享受自动完成功能
-4. **查看文档**: 鼠标悬停查看变量详细信息
-5. **验证输入**: 实时检查变量值的有效性
-6. **快速修复**: 使用 `Ctrl+.` 快速修复错误值
-7. **访问文档**: 点击 hover 提示中的链接跳转到官方文档
-8. **变量标识**: 通过 inlay hints 区分内置变量和用户变量
+1. **Create Input File**: Create or open `.inp` files
+2. **Enjoy Syntax Highlighting**: Automatically recognize and highlight Octopus syntax
+3. **Smart Completion**: Enjoy auto-completion when typing variable names
+4. **View Documentation**: Hover over variables to see detailed information
+5. **Input Validation**: Real-time validation of variable value validity
+6. **Quick Fixes**: Use `Ctrl+.` to quickly fix incorrect values
+7. **Access Documentation**: Click links in hover tips to jump to official documentation
+8. **Variable Identification**: Distinguish built-in and user variables through inlay hints
 
-### 可用命令
+### Available Commands
 
-- **Octopus: 显示所有 Octopus 变量** - 列出当前版本支持的所有变量
-- **Octopus: 切换 Octopus 版本** - 在不同版本间切换
-- **Octopus: 自动检测 Octopus 版本** - 根据文件内容检测版本
-- **Octopus: 检测系统安装的 Octopus 版本** - 检测系统中安装的版本
-- **Octopus: 切换 Inlay Hints 显示** - 开启/关闭变量类型标识
+- **Octopus: Show All Octopus Variables** - List all variables supported in current version
+- **Octopus: Switch Octopus Version** - Switch between different versions
+- **Octopus: Auto Detect Octopus Version** - Detect version based on file content
+- **Octopus: Detect System Installed Octopus Version** - Detect version installed in system
+- **Octopus: Toggle Inlay Hints Display** - Enable/disable variable type identification
 
-## 示例
+## Example
 
 ```octopus
-# 计算模式设置
-CalculationMode = gs          # [builtin] 基态计算
-TheoryLevel = dft             # [builtin] 密度泛函理论
+# Calculation mode settings
+CalculationMode = gs          # [builtin] Ground state calculation
+TheoryLevel = dft             # [builtin] Density functional theory
 
-# SCF 参数设置  
-MixingScheme = broyden        # [builtin] Broyden 混合方案
-Mixing = 0.3                  # [builtin] 混合参数
-MaximumIter = 100             # [builtin] 最大迭代次数
+# SCF parameter settings  
+MixingScheme = broyden        # [builtin] Broyden mixing scheme
+Mixing = 0.3                  # [builtin] Mixing parameter
+MaximumIter = 100             # [builtin] Maximum iterations
 
-# 用户自定义参数
-MyCustomRadius = 5.0          # [user] 用户定义的半径
-UserBoxSize = 10.0            # [user] 用户定义的盒子大小
+# User-defined parameters
+MyCustomRadius = 5.0          # [user] User-defined radius
+UserBoxSize = 10.0            # [user] User-defined box size
 
-# 交换相关泛函
-XCFunctional = lda            # [builtin] LDA 泛函
+# Exchange-correlation functional
+XCFunctional = lda            # [builtin] LDA functional
 
-# 网格设置
-Spacing = 0.25 * angstrom     # [builtin] 支持数学表达式
-BoxShape = minimum            # [builtin] 最小盒子形状
+# Grid settings
+Spacing = 0.25 * angstrom     # [builtin] Support mathematical expressions
+BoxShape = minimum            # [builtin] Minimum box shape
 
-# 系统定义
+# System definition
 %Coordinates
   "H" | 0.0 | 0.0 | 0.0
   "H" | 0.0 | 0.0 | 1.4 * angstrom
 %
 ```
 
-> 注：示例中的 `[builtin]` 和 `[user]` 标识会在实际使用中以 inlay hints 的形式显示在变量名后面。
+> Note: The `[builtin]` and `[user]` labels shown in the example will actually appear as inlay hints next to variable names in actual usage.
 
-## 支持的文件类型
+## Supported File Types
 
-- `.inp` - Octopus 输入文件（主要）
-- 任何标识为 `octopus` 语言的文件
+- `.inp` - Octopus input files (primary)
+- Any file identified as `octopus` language
 
-## 变量覆盖范围
+## Variable Coverage
 
-插件支持 **758+ 个 Octopus 14.1 变量**，覆盖所有主要功能模块：
+The extension supports **758+ Octopus 14.1 variables**, covering all major functional modules:
 
-### 核心计算设置
+### Core Calculation Settings
 
-- **CalculationMode** - 计算模式（基态、时域等）
-- **TheoryLevel** - 理论级别（DFT、Hartree 等）
-- **XCFunctional** - 交换相关泛函
+- **CalculationMode** - Calculation mode (ground state, time domain, etc.)
+- **TheoryLevel** - Theory level (DFT, Hartree, etc.)
+- **XCFunctional** - Exchange-correlation functional
 
-### SCF 收敛控制
+### SCF Convergence Control
 
-- **MaximumIter** - 最大 SCF 迭代次数
-- **ConvRelDens** - 密度收敛标准
-- **MixingScheme** - 密度混合方案
-- **Mixing** - 混合参数
+- **MaximumIter** - Maximum SCF iterations
+- **ConvRelDens** - Density convergence criteria
+- **MixingScheme** - Density mixing scheme
+- **Mixing** - Mixing parameter
 
-### 网格和几何
+### Grid and Geometry
 
-- **Spacing** - 网格间距
-- **BoxShape** - 盒子形状
-- **Radius** - 球形盒子半径
+- **Spacing** - Grid spacing
+- **BoxShape** - Box shape
+- **Radius** - Spherical box radius
 
-### 时间演化
+### Time Evolution
 
-- **TDTimeStep** - 时间步长
-- **TDMaxSteps** - 最大时间步数
-- **TDEvolutionMethod** - 时间演化方法
+- **TDTimeStep** - Time step size
+- **TDMaxSteps** - Maximum time steps
+- **TDEvolutionMethod** - Time evolution method
 
-### 输出控制
+### Output Control
 
-- **Output** - 输出内容控制
-- **OutputHow** - 输出格式控制
-- **OutputInterval** - 输出间隔
+- **Output** - Output content control
+- **OutputHow** - Output format control
+- **OutputInterval** - Output interval
 
-### 以及更多模块
+### And More Modules
 
-- 原子结构定义
-- 激发态计算
-- 光谱计算
-- 优化算法
-- 并行计算设置
+- Atomic structure definition
+- Excited state calculations
+- Spectroscopy calculations
+- Optimization algorithms
+- Parallel computing settings
 
-## 技术特性
+## Technical Features
 
-### 实时验证引擎
+### Real-time Validation Engine
 
-- **类型检查**: 自动验证 integer、float、logical、string 类型
-- **选项验证**: 检查预定义选项的有效性
-- **数学表达式**: 识别并支持复杂数学表达式
-- **组合选项**: 支持用 `+` 连接的多选项验证
+- **Type Checking**: Automatically validate integer, float, logical, string types
+- **Option Validation**: Check validity of predefined options
+- **Mathematical Expressions**: Recognize and support complex mathematical expressions
+- **Combination Options**: Support validation of multiple options connected with `+`
 
-### 智能补全系统
+### Intelligent Completion System
 
-- **上下文感知**: 根据变量位置提供相应补全
-- **类型匹配**: 根据变量类型提供合适的值建议
-- **默认值推荐**: 智能推荐官方默认值
-- **选项展示**: 完整显示所有可用选项
+- **Context Aware**: Provide appropriate completion based on variable position
+- **Type Matching**: Provide suitable value suggestions based on variable type
+- **Default Value Recommendations**: Smart recommendation of official default values
+- **Option Display**: Complete display of all available options
 
-### 文档集成
+### Documentation Integration
 
-- **在线链接**: 自动生成 Octopus 官方文档链接
-- **本地缓存**: 变量信息本地存储，快速响应
-- **版本同步**: 基于 Octopus 14.1 varinfo 数据
+- **Online Links**: Auto-generate Octopus official documentation links
+- **Local Cache**: Variable information stored locally for fast response
+- **Version Sync**: Based on Octopus 14.1 varinfo data
 
-## 开发和贡献
+## Development and Contributing
 
-### 项目结构
+### Project Structure
 
 ```text
 vscode-octopus/
 ├── src/
-│   ├── extension.js          # 主要扩展逻辑
-│   └── varinfo-14.1.json     # 自动生成的变量数据库
+│   ├── extension.js          # Main extension logic
+│   ├── varinfo-14.1.json     # Auto-generated variable database
+│   ├── varinfo-16.2.json     # Octopus 16.2 variable database
+│   ├── version-detection.js  # Version detection utilities
+│   ├── commands/             # Command implementations
+│   │   ├── autoDetectVersion.js
+│   │   ├── detectSystemVersion.js
+│   │   ├── showVariables.js
+│   │   ├── switchVersion.js
+│   │   └── toggleInlayHints.js
+│   ├── providers/            # Language service providers
+│   │   ├── codeActionProvider.js
+│   │   ├── completionProvider.js
+│   │   ├── diagnosticProvider.js
+│   │   ├── hoverProvider.js
+│   │   └── inlayHintsProvider.js
+│   └── utils/                # Utility modules
+│       ├── logger.js
+│       ├── parser.js
+│       ├── validator.js
+│       └── versionManager.js
 ├── syntaxes/
-│   └── octopus.tmLanguage.json  # TextMate 语法文件
-├── scripts/                  # 构建和解析脚本
-├── tests/                    # 测试文件和示例
-└── package.json             # 扩展清单
+│   └── octopus.tmLanguage.json  # TextMate syntax file
+├── tests/                    # Test files and examples
+└── package.json             # Extension manifest
 ```
 
-### 贡献指南
+### Contributing Guidelines
 
-欢迎提交 Issue 和 Pull Request！
+Welcome to submit Issues and Pull Requests!
 
-1. **Bug 报告**: 请提供具体的输入文件和错误描述
-2. **功能请求**: 说明需要的功能和使用场景
-3. **代码贡献**:
-   - Fork 项目并创建特性分支
-   - 添加测试覆盖新功能
-   - 确保所有测试通过
-   - 提交 Pull Request
+1. **Bug Reports**: Please provide specific input files and error descriptions
+2. **Feature Requests**: Explain needed features and use cases
+3. **Code Contributions**:
+   - Fork the project and create a feature branch
+   - Add test coverage for new features
+   - Ensure all tests pass
+   - Submit Pull Request
 
-## 更新日志
+## Changelog
 
-查看 [CHANGELOG.md](CHANGELOG.md) 了解详细的版本更新信息。
+See [CHANGELOG.md](CHANGELOG.md) for detailed version update information.
 
-## 许可证
+## License
 
-MIT License - 查看 [LICENSE](LICENSE) 文件了解详情。
+MIT License - See [LICENSE](LICENSE) file for details.
 
-## 相关链接
+## Related Links
 
-- [Octopus 官方网站](https://octopus-code.org/)
-- [Octopus 14.1 文档](https://octopus-code.org/documentation/14/)
-- [VSCode 扩展开发文档](https://code.visualstudio.com/api)
+- [Octopus Official Website](https://octopus-code.org/)
+- [Octopus 14.1 Documentation](https://octopus-code.org/documentation/14/)
+- [Octopus 16.2 Documentation](https://octopus-code.org/documentation/16/)
+- [VSCode Extension Development Documentation](https://code.visualstudio.com/api)

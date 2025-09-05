@@ -53,7 +53,7 @@ function logError(error, context = "") {
   }
 
   // 显示用户友好的错误通知
-  vscode.window.showErrorMessage(`Octopus 扩展错误: ${errorMessage}`);
+  vscode.window.showErrorMessage(`Octopus extension error: ${errorMessage}`);
 }
 
 /**

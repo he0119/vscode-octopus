@@ -4,8 +4,8 @@ const { safeExecute } = require("../utils/logger");
 const { parseVariableAssignment } = require("../utils/parser");
 
 /**
- * 注册代码操作提供者（快速修复）
- * @returns {vscode.Disposable} 提供者的 disposable
+ * Register code action provider (quick fixes)
+ * @returns {vscode.Disposable} Provider disposable
  */
 function registerCodeActionProvider() {
   return vscode.languages.registerCodeActionsProvider(
@@ -13,24 +13,24 @@ function registerCodeActionProvider() {
     {
       provideCodeActions(document, range, context, token) {
         return safeExecute(() => {
-          const variables = getVariables(); // 动态获取当前变量集合
+          const variables = getVariables(); // Dynamically get current variable collection
           const codeActions = [];
 
-          // 遍历当前范围内的诊断
+          // Iterate through diagnostics in current range
           context.diagnostics.forEach((diagnostic) => {
             if (diagnostic.source === "octopus") {
               const line = document.lineAt(diagnostic.range.start.line);
               const assignment = parseVariableAssignment(line.text);
 
               if (assignment) {
-                // 只处理无效变量值的情况（变量存在但值无效）
+                // Only handle cases of invalid variable values (variable exists but value is invalid)
                 const variable = variables[assignment.variableName];
                 if (variable) {
                   if (variable.Options && variable.Options.length > 0) {
-                    // 提供前几个单个选项
+                    // Provide first few single options
                     variable.Options.slice(0, 5).forEach((option) => {
                       const action = new vscode.CodeAction(
-                        `设置为 '${option.Name}'`,
+                        `Set to '${option.Name}'`,
                         vscode.CodeActionKind.QuickFix
                       );
 
@@ -54,10 +54,10 @@ function registerCodeActionProvider() {
                       codeActions.push(action);
                     });
                   } else if (variable.Default) {
-                    // 提供默认值
+                    // Provide default value
                     const defaultValue = Array.isArray(variable.Default) ? variable.Default[0] : variable.Default;
                     const action = new vscode.CodeAction(
-                      `设置为默认值 '${defaultValue}'`,
+                      `Set to default value '${defaultValue}'`,
                       vscode.CodeActionKind.QuickFix
                     );
 
@@ -86,7 +86,7 @@ function registerCodeActionProvider() {
           });
 
           return codeActions;
-        }, "代码操作");
+        }, "Code actions");
       },
     }
   );

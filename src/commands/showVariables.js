@@ -4,14 +4,14 @@ const { generateDocUrl } = require("../utils/parser");
 const { safeExecute } = require("../utils/logger");
 
 /**
- * 注册显示所有可用变量的命令
- * @returns {vscode.Disposable} 命令的 disposable
+ * Register command to show all available variables
+ * @returns {vscode.Disposable} Command disposable
  */
 function registerShowVariablesCommand() {
   return vscode.commands.registerCommand("octopus.showVariables", () => {
     return safeExecute(() => {
-      const variables = getVariables(); // 动态获取当前变量集合
-      const currentVersion = getCurrentVersion(); // 动态获取当前版本
+      const variables = getVariables(); // Dynamically get current variable collection
+      const currentVersion = getCurrentVersion(); // Dynamically get current version
 
       const quickPick = vscode.window.createQuickPick();
       quickPick.items = Object.keys(variables).map((name) => {
@@ -29,7 +29,7 @@ function registerShowVariablesCommand() {
         };
       });
 
-      quickPick.placeholder = `搜索 Octopus ${currentVersion} 变量...`;
+      quickPick.placeholder = `Search Octopus ${currentVersion} variables...`;
       quickPick.matchOnDescription = true;
       quickPick.matchOnDetail = true;
 
@@ -49,7 +49,7 @@ function registerShowVariablesCommand() {
       });
 
       quickPick.show();
-    }, "显示变量命令");
+    }, "Show variables command");
   });
 }
 

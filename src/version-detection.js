@@ -2,59 +2,59 @@ const vscode = require("vscode");
 const { exec } = require("child_process");
 const util = require("util");
 
-// 将 exec 转换为 Promise 版本
+// Convert exec to Promise version
 const execAsync = util.promisify(exec);
 
 /**
- * 通过运行 octopus --version 命令检测系统安装的版本
- * @returns {Promise<string|null>} 检测到的版本号
+ * Detect system-installed version by running octopus --version command
+ * @returns {Promise<string|null>} Detected version number
  */
 async function detectVersionFromSystem() {
     try {
-        // 尝试运行 octopus --version 命令
+        // Try to run octopus --version command
         const { stdout, stderr } = await execAsync('octopus --version', {
-            timeout: 5000, // 5秒超时
+            timeout: 5000, // 5 second timeout
             encoding: 'utf8'
         });
 
         if (stderr && !stdout) {
-            console.warn('octopus --version 命令执行有警告:', stderr);
+            console.warn('octopus --version command execution has warnings:', stderr);
         }
 
-        // 解析输出，格式通常为: "octopus 16.2 (git commit 28271023a8)"
+        // Parse output, format is usually: "octopus 16.2 (git commit 28271023a8)"
         const versionMatch = stdout.match(/octopus\s+(\d+\.\d+)/i);
         if (versionMatch) {
             const version = versionMatch[1];
-            console.log(`通过系统命令检测到 Octopus 版本: ${version}`);
+            console.log(`Detected Octopus version through system command: ${version}`);
             return version;
         }
 
-        console.warn('无法从 octopus --version 输出中解析版本号:', stdout);
+        console.warn('Unable to parse version number from octopus --version output:', stdout);
         return null;
 
     } catch (error) {
-        // 命令执行失败（octopus 未安装或不在 PATH 中）
-        console.log('无法执行 octopus --version 命令:', error.message);
+        // Command execution failed (octopus not installed or not in PATH)
+        console.log('Unable to execute octopus --version command:', error.message);
         return null;
     }
 }
 
 /**
- * 尝试从文件内容中检测 Octopus 版本
- * @param {string} content 文件内容
- * @returns {string|null} 检测到的版本号，如果无法检测则返回null
+ * Try to detect Octopus version from file content
+ * @param {string} content File content
+ * @returns {string|null} Detected version number, returns null if unable to detect
  */
 function detectVersionFromContent(content) {
-    // 检查文件中是否有版本注释
+    // Check if there are version comments in the file
     const versionCommentMatch = content.match(/(?:#|%)\s*octopus\s+version?\s*[:\-]?\s*(\d+\.\d+)/i);
     if (versionCommentMatch) {
         return versionCommentMatch[1];
     }
 
-    // 检查是否有版本特定的变量或功能
-    // 这里可以根据不同版本的特有功能来判断
+    // Check for version-specific variables or features
+    // Here we can judge based on unique features of different versions
 
-    // 例如：某些变量只在特定版本中存在
+    // For example: certain variables only exist in specific versions
     if (content.includes("SomeVariable16_2Only")) {
         return "16.2";
     }
@@ -67,8 +67,8 @@ function detectVersionFromContent(content) {
 }
 
 /**
- * 尝试从工作区中检测 Octopus 版本
- * @returns {Promise<string|null>} 检测到的版本号
+ * Try to detect Octopus version from workspace
+ * @returns {Promise<string|null>} Detected version number
  */
 async function detectVersionFromWorkspace() {
     const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -76,7 +76,7 @@ async function detectVersionFromWorkspace() {
         return null;
     }
 
-    // 查找可能包含版本信息的文件
+    // Look for files that might contain version information
     const configFiles = [
         "octopus.conf",
         "config.inp",
@@ -96,7 +96,7 @@ async function detectVersionFromWorkspace() {
                     return version;
                 }
             } catch (error) {
-                // 文件不存在或读取失败，继续尝试下一个
+                // File doesn't exist or read failed, continue trying the next one
                 continue;
             }
         }
@@ -106,8 +106,8 @@ async function detectVersionFromWorkspace() {
 }
 
 /**
- * 尝试从当前活动文档检测版本
- * @returns {string|null} 检测到的版本号
+ * Try to detect version from current active document
+ * @returns {string|null} Detected version number
  */
 function detectVersionFromActiveDocument() {
     const activeEditor = vscode.window.activeTextEditor;
@@ -119,23 +119,23 @@ function detectVersionFromActiveDocument() {
 }
 
 /**
- * 自动检测 Octopus 版本
- * @returns {Promise<string|null>} 检测到的版本号
+ * Auto-detect Octopus version
+ * @returns {Promise<string|null>} Detected version number
  */
 async function autoDetectVersion() {
-    // 1. 首先尝试从系统命令检测（最可靠）
+    // 1. First try to detect from system command (most reliable)
     let version = await detectVersionFromSystem();
     if (version) {
         return version;
     }
 
-    // 2. 然后尝试从当前活动文档检测
+    // 2. Then try to detect from current active document
     version = detectVersionFromActiveDocument();
     if (version) {
         return version;
     }
 
-    // 3. 最后尝试从工作区检测
+    // 3. Finally try to detect from workspace
     version = await detectVersionFromWorkspace();
     if (version) {
         return version;

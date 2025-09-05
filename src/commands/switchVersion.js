@@ -3,46 +3,46 @@ const { getCurrentVersion, loadVariables } = require("../utils/versionManager");
 const { safeExecute } = require("../utils/logger");
 
 /**
- * 注册切换版本的命令
- * @param {Function} updateDiagnostics - 更新诊断的函数
- * @returns {vscode.Disposable} 命令的 disposable
+ * Register version switching command
+ * @param {Function} updateDiagnostics - Function to update diagnostics
+ * @returns {vscode.Disposable} Command disposable
  */
 function registerSwitchVersionCommand(updateDiagnostics) {
   return vscode.commands.registerCommand("octopus.switchVersion", async () => {
     return safeExecute(async () => {
-      const currentVersion = getCurrentVersion(); // 动态获取当前版本
+      const currentVersion = getCurrentVersion(); // Dynamically get current version
       const versions = ["14.1", "16.2"];
       const selectedVersion = await vscode.window.showQuickPick(
         versions.map(version => ({
           label: `Octopus ${version}`,
-          description: version === currentVersion ? "(当前版本)" : "",
+          description: version === currentVersion ? "(current version)" : "",
           version: version
         })),
         {
-          placeHolder: `选择 Octopus 版本 (当前: ${currentVersion})`,
+          placeHolder: `Select Octopus version (current: ${currentVersion})`,
           canPickMany: false
         }
       );
 
       if (selectedVersion && selectedVersion.version !== currentVersion) {
         if (loadVariables(selectedVersion.version)) {
-          // 更新配置
+          // Update configuration
           const config = vscode.workspace.getConfiguration('octopus');
           await config.update('version', selectedVersion.version, vscode.ConfigurationTarget.Global);
 
-          // 重新验证所有打开的文档
+          // Re-validate all open documents
           vscode.workspace.textDocuments.forEach(updateDiagnostics);
 
           vscode.window.showInformationMessage(
-            `已切换到 Octopus ${selectedVersion.version} 版本`
+            `Switched to Octopus ${selectedVersion.version} version`
           );
         } else {
           vscode.window.showErrorMessage(
-            `切换到 Octopus ${selectedVersion.version} 版本失败`
+            `Failed to switch to Octopus ${selectedVersion.version} version`
           );
         }
       }
-    }, "切换版本命令");
+    }, "Switch version command");
   });
 }
 

@@ -4,49 +4,49 @@ const { getCurrentVersion, loadVariables } = require("../utils/versionManager");
 const { safeExecute } = require("../utils/logger");
 
 /**
- * 注册自动检测版本的命令
- * @param {Function} updateDiagnostics - 更新诊断的函数
- * @returns {vscode.Disposable} 命令的 disposable
+ * Register auto version detection command
+ * @param {Function} updateDiagnostics - Function to update diagnostics
+ * @returns {vscode.Disposable} Command disposable
  */
 function registerAutoDetectVersionCommand(updateDiagnostics) {
   return vscode.commands.registerCommand("octopus.autoDetectVersion", async () => {
     return safeExecute(async () => {
-      const currentVersion = getCurrentVersion(); // 动态获取当前版本
-      vscode.window.showInformationMessage("正在检测 Octopus 版本...");
+      const currentVersion = getCurrentVersion(); // Dynamically get current version
+      vscode.window.showInformationMessage("Detecting Octopus version...");
 
       const detectedVersion = await versionDetection.autoDetectVersion();
 
       if (detectedVersion) {
         if (detectedVersion !== currentVersion) {
           const action = await vscode.window.showInformationMessage(
-            `检测到 Octopus ${detectedVersion} 版本，是否切换？`,
-            "切换",
-            "取消"
+            `Detected Octopus ${detectedVersion} version, switch to it?`,
+            "Switch",
+            "Cancel"
           );
 
-          if (action === "切换" && loadVariables(detectedVersion)) {
-            // 更新配置
+          if (action === "Switch" && loadVariables(detectedVersion)) {
+            // Update configuration
             const config = vscode.workspace.getConfiguration('octopus');
             await config.update('version', detectedVersion, vscode.ConfigurationTarget.Workspace);
 
-            // 重新验证所有打开的文档
+            // Re-validate all open documents
             vscode.workspace.textDocuments.forEach(updateDiagnostics);
 
             vscode.window.showInformationMessage(
-              `已切换到检测的 Octopus ${detectedVersion} 版本`
+              `Switched to detected Octopus ${detectedVersion} version`
             );
           }
         } else {
           vscode.window.showInformationMessage(
-            `检测到当前版本 Octopus ${detectedVersion}，无需切换`
+            `Detected current version Octopus ${detectedVersion}, no need to switch`
           );
         }
       } else {
         vscode.window.showWarningMessage(
-          "无法自动检测 Octopus 版本，请手动选择版本"
+          "Unable to auto-detect Octopus version, please manually select version"
         );
       }
-    }, "自动检测版本命令");
+    }, "Auto detect version command");
   });
 }
 

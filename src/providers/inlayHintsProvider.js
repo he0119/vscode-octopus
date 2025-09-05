@@ -4,12 +4,12 @@ const { parseVariableAssignment } = require("../utils/parser");
 const { safeExecute } = require("../utils/logger");
 
 /**
- * 解析块开始语句 (%BlockName)
+ * Parse block start statement (%BlockName)
  * @param {string} line 
  * @returns {object|null} {blockName, startPos, endPos}
  */
 function parseBlockStart(line) {
-    // 匹配 %BlockName 格式
+    // Match %BlockName format
     const match = line.match(/^\s*%([A-Za-z][A-Za-z0-9_]*)\s*$/);
     if (!match) return null;
 
@@ -25,8 +25,8 @@ function parseBlockStart(line) {
 }
 
 /**
- * 注册 Inlay Hints 提供者
- * @returns {vscode.Disposable} 注册的 Inlay Hints 提供者
+ * Register Inlay Hints provider
+ * @returns {vscode.Disposable} Registered Inlay Hints provider
  */
 function registerInlayHintsProvider() {
     return safeExecute(() => {
@@ -36,18 +36,18 @@ function registerInlayHintsProvider() {
             { language: "octopus" },
             provider
         );
-    }, "注册 Inlay Hints 提供者");
+    }, "Register Inlay Hints provider");
 }
 
 /**
- * Octopus Inlay Hints 提供者
+ * Octopus Inlay Hints provider
  */
 class OctopusInlayHintsProvider {
     constructor() {
         this._onDidChangeInlayHints = new vscode.EventEmitter();
         this.onDidChangeInlayHints = this._onDidChangeInlayHints.event;
 
-        // 监听配置变化
+        // Listen for configuration changes
         vscode.workspace.onDidChangeConfiguration(event => {
             if (event.affectsConfiguration('octopus.inlayHints')) {
                 this._onDidChangeInlayHints.fire();
@@ -55,7 +55,7 @@ class OctopusInlayHintsProvider {
         });
     }
     /**
-     * 提供 Inlay Hints
+     * Provide Inlay Hints
      * @param {vscode.TextDocument} document 
      * @param {vscode.Range} range 
      * @param {vscode.CancellationToken} token 
@@ -66,7 +66,7 @@ class OctopusInlayHintsProvider {
             const hints = [];
             const variables = getVariables();
 
-            // 检查配置是否启用了 inlay hints
+            // Check if inlay hints are enabled in configuration
             const config = vscode.workspace.getConfiguration("octopus");
             const showInlayHints = config.get("inlayHints.enabled", true);
             const showBuiltinHints = config.get("inlayHints.showBuiltin", true);
@@ -76,7 +76,7 @@ class OctopusInlayHintsProvider {
                 return hints;
             }
 
-            // 遍历范围内的每一行
+            // Iterate through each line in the range
             for (let lineIndex = range.start.line; lineIndex <= range.end.line; lineIndex++) {
                 if (token.isCancellationRequested) {
                     break;
@@ -85,12 +85,12 @@ class OctopusInlayHintsProvider {
                 const line = document.lineAt(lineIndex);
                 const lineText = line.text;
 
-                // 跳过注释行和空行
+                // Skip comment lines and empty lines
                 if (lineText.trim().startsWith("#") || lineText.trim() === "") {
                     continue;
                 }
 
-                // 尝试解析变量赋值
+                // Try to parse variable assignment
                 const parseResult = parseVariableAssignment(lineText);
                 if (parseResult) {
                     const hint = this.createVariableHint(parseResult, variables, showBuiltinHints, showUserHints, lineIndex);
@@ -98,7 +98,7 @@ class OctopusInlayHintsProvider {
                     continue;
                 }
 
-                // 尝试解析块开始语句
+                // Try to parse block start statement
                 const blockResult = parseBlockStart(lineText);
                 if (blockResult) {
                     const hint = this.createBlockHint(blockResult, variables, showBuiltinHints, showUserHints, lineIndex);
@@ -108,7 +108,7 @@ class OctopusInlayHintsProvider {
             }
 
             return hints;
-        }, "提供 Inlay Hints");
+        }, "Provide Inlay Hints");
     }
 
     /**

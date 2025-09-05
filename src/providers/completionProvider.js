@@ -3,8 +3,8 @@ const { getVariables } = require("../utils/versionManager");
 const { safeExecute } = require("../utils/logger");
 
 /**
- * 注册代码补全提供者
- * @returns {vscode.Disposable} 提供者的 disposable
+ * Register code completion provider
+ * @returns {vscode.Disposable} Provider's disposable
  */
 function registerCompletionProvider() {
   return vscode.languages.registerCompletionItemProvider(
@@ -12,24 +12,24 @@ function registerCompletionProvider() {
     {
       provideCompletionItems(document, position, token, context) {
         return safeExecute(() => {
-          const variables = getVariables(); // 动态获取当前变量集合
+          const variables = getVariables(); // Dynamically get current variable set
           const completionItems = [];
           const line = document.lineAt(position.line);
           const lineText = line.text;
           const textBeforeCursor = lineText.substring(0, position.character);
 
-          // 检查是否在变量赋值语句中
+          // Check if in variable assignment statement
           const assignmentMatch = textBeforeCursor.match(
             /^\s*([A-Za-z][A-Za-z0-9_]*)\s*=\s*(.*)$/
           );
 
           if (assignmentMatch) {
-            // 在等号后面，提供变量值的补全
+            // After equals sign, provide completion for variable values
             const variableName = assignmentMatch[1].trim();
             const variable = variables[variableName];
 
             if (variable) {
-              // 如果变量有预定义选项，提供这些选项
+              // If variable has predefined options, provide these options
               if (variable.Options && variable.Options.length > 0) {
                 variable.Options.forEach((option) => {
                   const item = new vscode.CompletionItem(
@@ -38,29 +38,29 @@ function registerCompletionProvider() {
                   );
                   item.detail = option.Value;
                   item.documentation = new vscode.MarkdownString(
-                    `**${variableName}** 的可选值`
+                    `Optional value for **${variableName}**`
                   );
                   item.insertText = option.Name;
                   completionItems.push(item);
                 });
               }
 
-              // 如果变量有默认值，也提供默认值选项
+              // If variable has default value, also provide default value option
               if (variable.Default) {
                 const defaultValue = Array.isArray(variable.Default) ? variable.Default[0] : variable.Default;
                 const item = new vscode.CompletionItem(
                   defaultValue,
                   vscode.CompletionItemKind.Value
                 );
-                item.detail = "默认值";
+                item.detail = "Default value";
                 item.documentation = new vscode.MarkdownString(
-                  `**${variableName}** 的默认值`
+                  `Default value for **${variableName}**`
                 );
                 item.insertText = defaultValue;
                 completionItems.push(item);
               }
 
-              // 根据变量类型提供一些常见值
+              // Provide common values based on variable type
               switch (variable.Type) {
                 case "logical":
                   ["true", "false", "yes", "no"].forEach((value) => {
@@ -68,9 +68,9 @@ function registerCompletionProvider() {
                       value,
                       vscode.CompletionItemKind.Value
                     );
-                    item.detail = "逻辑值";
+                    item.detail = "Logical value";
                     item.documentation = new vscode.MarkdownString(
-                      `**${variableName}** 的逻辑值选项`
+                      `Logical value option for **${variableName}**`
                     );
                     item.insertText = value;
                     completionItems.push(item);
@@ -79,7 +79,7 @@ function registerCompletionProvider() {
               }
             }
           } else {
-            // 不在赋值语句中，提供变量名的补全
+            // Not in assignment statement, provide variable name completion
             Object.keys(variables).forEach((varName) => {
               const variable = variables[varName];
               const item = new vscode.CompletionItem(
@@ -93,7 +93,7 @@ function registerCompletionProvider() {
                 : variable.Description || "";
               item.documentation = new vscode.MarkdownString(description);
 
-              // 添加插入文本
+              // Add insert text
               const defaultValue = variable.Default
                 ? Array.isArray(variable.Default)
                   ? variable.Default[0]
@@ -110,11 +110,11 @@ function registerCompletionProvider() {
           }
 
           return completionItems;
-        }, "代码补全");
+        }, "Code completion");
       },
     },
     "=",
-    " " // 在等号和空格后触发补全
+    " " // Trigger completion after equals sign and space
   );
 }
 

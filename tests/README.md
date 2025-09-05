@@ -1,95 +1,18 @@
 # Octopus VSCode Extension Tests
 
-这个目录包含 Octopus VSCode 扩展的测试文件和示例。
+This directory contains test examples for the Octopus VSCode extension.
 
-## 测试文件结构
+## Example File Description
 
-### 核心测试文件
+The `examples.inp` file contains the following content:
 
-- **`test-suite.js`** - 主要的测试套件，整合了所有测试功能
-- **`examples.inp`** - 全面的示例文件，包含所有语法特性
-
-### 运行测试
-
-```bash
-# 运行完整测试套件
-npm test
-
-# 或者直接运行
-node tests/test-suite.js
-```
-
-## 测试内容
-
-### 1. 文件存在性测试
-
-- 检查必需的文件是否存在
-- 验证扩展的基本结构
-
-### 2. 语法结构测试
-
-- 验证语法文件格式正确
-- 检查块语法和变量规则
-
-### 3. 正则表达式模式测试
-
-- 块开始模式 (`%BlockName`)
-- 块结束模式 (`%`)
-- 块内容模式 (变量名)
-
-### 4. 变量验证测试
-
-- 变量文件加载
-- 重要变量存在性
-- 变量结构正确性
-
-### 5. 语法高亮测试
-
-- 科学记数法识别
-- 逻辑值识别
-- 组合表达式识别
-
-## 示例文件说明
-
-`examples.inp` 文件包含以下内容：
-
-1. **基本语法元素** - 注释、包含语句、变量赋值
-2. **数值和科学记数法** - 各种数值格式
-3. **逻辑/布尔值** - 不同的布尔表示方法
-4. **字符串值和标识符** - 字符串赋值和选项
-5. **数学表达式** - 数学运算和函数
-6. **组合表达式** - XC 泛函组合
-7. **块语法** - 各种块结构
-8. **验证测试用例** - 有效和无效的例子
-9. **复杂实际示例** - 真实世界的配置
-10. **边界情况** - 特殊语法和边界测试
-
-## 历史文件（已整合）
-
-以下文件已被整合到新的测试框架中：
-
-- `test-blocks.js` → 整合到 `test-suite.js`
-- `test-plugin.js` → 整合到 `test-suite.js`
-- `test-regex.js` → 整合到 `test-suite.js`
-- `comprehensive-validation-test.inp` → 整合到 `examples.inp`
-- `example.inp` → 整合到 `examples.inp`
-- `scientific-notation-test.inp` → 整合到 `examples.inp`
-- `test-syntax.inp` → 整合到 `examples.inp`
-- `validation-test.inp` → 整合到 `examples.inp`
-
-## 开发建议
-
-1. **添加新测试** - 在 `test-suite.js` 中添加新的测试方法
-2. **扩展示例** - 在 `examples.inp` 中添加新的语法示例
-3. **运行测试** - 在修改代码后始终运行测试
-4. **测试驱动开发** - 先写测试，再实现功能
-
-## 测试结果
-
-测试会输出详细的结果，包括：
-
-- 通过/失败的测试数量
-- 失败测试的详细信息
-- 整体成功率
-
-成功的测试会以退出码 0 结束，失败的测试会以退出码 1 结束，便于 CI/CD 集成。
+1. **Basic Syntax Elements** - Comments, include statements, variable assignments
+2. **Numbers and Scientific Notation** - Various number formats
+3. **Logical/Boolean Values** - Different boolean representation methods
+4. **String Values and Identifiers** - String assignments and options
+5. **Mathematical Expressions** - Mathematical operations and functions
+6. **Combined Expressions** - XC functional combinations
+7. **Block Syntax** - Various block structures
+8. **Validation Test Cases** - Valid and invalid examples
+9. **Complex Real Examples** - Real-world configurations
+10. **Edge Cases** - Special syntax and boundary tests

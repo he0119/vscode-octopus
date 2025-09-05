@@ -1,7 +1,7 @@
 const { safeExecute, log } = require("./logger");
 
 /**
- * 预定义常量列表（与 tmLanguage.json 中保持一致）
+ * Predefined constants list (consistent with tmLanguage.json)
  */
 const PREDEFINED_CONSTANTS = [
   "pi", "e", "i", "angstrom", "pm", "picometer", "nm", "nanometer",
@@ -11,7 +11,7 @@ const PREDEFINED_CONSTANTS = [
 ];
 
 /**
- * 数学函数列表（与 tmLanguage.json 中保持一致）
+ * Mathematical functions list (consistent with tmLanguage.json)
  */
 const MATH_FUNCTIONS = [
   "sqrt", "exp", "log", "ln", "log10", "logb", "logabs", "arg", "abs", "abs2",
@@ -22,29 +22,29 @@ const MATH_FUNCTIONS = [
 ];
 
 /**
- * 检查值是否包含数学表达式
+ * Check if value contains mathematical expressions
  * @param {string} value
  * @returns {boolean}
  */
 function containsMathematicalExpression(value) {
-  // 检查是否包含数学运算符
+  // Check if contains mathematical operators
   if (/[+\-*\/^]/.test(value)) {
     return true;
   }
 
-  // 检查是否包含预定义常量
+  // Check if contains predefined constants
   const constantRegex = new RegExp(`\\b(${PREDEFINED_CONSTANTS.join("|")})\\b`, "i");
   if (constantRegex.test(value)) {
     return true;
   }
 
-  // 检查是否包含数学函数
+  // Check if contains mathematical functions
   const functionRegex = new RegExp(`\\b(${MATH_FUNCTIONS.join("|")})\\s*\\(`, "i");
   if (functionRegex.test(value)) {
     return true;
   }
 
-  // 检查是否包含复数表示法 {real, imag}
+  // Check if contains complex number notation {real, imag}
   if (/\{\s*[^}]+\s*,\s*[^}]+\s*\}/.test(value)) {
     return true;
   }
@@ -53,29 +53,29 @@ function containsMathematicalExpression(value) {
 }
 
 /**
- * 验证变量值
+ * Validate variable value
  * @param {string} variableName
  * @param {string} value
- * @param {Object} variables 变量集合
+ * @param {Object} variables Variable collection
  * @returns {object|null} {isValid, message, suggestion}
  */
 function validateVariableValue(variableName, value, variables) {
   return safeExecute(() => {
     const variable = variables[variableName];
 
-    // 如果变量不存在，返回null表示无需验证
+    // If variable doesn't exist, return null indicating no validation needed
     if (!variable) {
       return null;
     }
 
-    const cleanValue = value.replace(/['"]/g, ""); // 移除引号
+    const cleanValue = value.replace(/['"]/g, ""); // Remove quotes
 
-    // 检查是否有预定义选项
+    // Check if has predefined options
     if (variable.Options && variable.Options.length > 0) {
       const validOptions = variable.Options.map((opt) => opt.Name.toLowerCase());
       const validValues = variable.Options.map((opt) => opt.Value.toLowerCase());
 
-      // 支持加号连接的选项（如 "lda_x + lda_c_pz_mod"）
+      // Support plus-connected options (e.g., "lda_x + lda_c_pz_mod")
       if (cleanValue.includes("+")) {
         const parts = cleanValue
           .split("+")
@@ -90,65 +90,65 @@ function validateVariableValue(variableName, value, variables) {
           );
           const errorResult = {
             isValid: false,
-            message: `无效的选项: ${invalidParts.join(", ")}`,
-            suggestion: `可选值: ${variable.Options
+            message: `Invalid options: ${invalidParts.join(", ")}`,
+            suggestion: `Valid values: ${variable.Options
               .map((opt) => opt.Name)
               .slice(0, 10)
               .join(", ")}${variable.Options.length > 10 ? "..." : ""}`,
           };
-          log(`验证失败: ${errorResult.message}`, "WARN");
+          log(`Validation failed: ${errorResult.message}`, "WARN");
           return errorResult;
         }
       } else {
-        // 单个选项验证
+        // Single option validation
         if (
           !validOptions.includes(cleanValue.toLowerCase()) &&
           !validValues.includes(cleanValue.toLowerCase())
         ) {
           const errorResult = {
             isValid: false,
-            message: `无效的值 '${cleanValue}'`,
-            suggestion: `可选值: ${variable.Options
+            message: `Invalid value '${cleanValue}'`,
+            suggestion: `Valid values: ${variable.Options
               .map((opt) => opt.Name)
               .slice(0, 10)
               .join(", ")}${variable.Options.length > 10 ? "..." : ""}`,
           };
-          log(`验证失败: ${errorResult.message}`, "WARN");
+          log(`Validation failed: ${errorResult.message}`, "WARN");
           return errorResult;
         }
       }
       return { isValid: true };
     }
 
-    // 根据类型验证值
+    // Validate value based on type
     switch (variable.Type) {
       case "integer":
         if (!/^-?\d+$/.test(cleanValue)) {
           const errorResult = {
             isValid: false,
-            message: `'${cleanValue}' 不是有效的整数`,
-            suggestion: `期望整数值，如: ${variable.Default ? variable.Default[0] : "1"}`,
+            message: `'${cleanValue}' is not a valid integer`,
+            suggestion: `Expected integer value, e.g.: ${variable.Default ? variable.Default[0] : "1"}`,
           };
-          log(`验证失败: ${errorResult.message}`, "WARN");
+          log(`Validation failed: ${errorResult.message}`, "WARN");
           return errorResult;
         }
         break;
 
       case "float":
       case "real":
-        // 如果包含数学表达式，则认为是有效的
+        // If contains mathematical expression, consider it valid
         if (containsMathematicalExpression(cleanValue)) {
           return { isValid: true };
         }
 
-        // 否则验证是否为纯数字格式
+        // Otherwise validate if it's pure numeric format
         if (!/^-?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(cleanValue)) {
           const errorResult = {
             isValid: false,
-            message: `'${cleanValue}' 不是有效的浮点数或数学表达式`,
-            suggestion: `期望浮点数或数学表达式，如: ${variable.Default ? variable.Default[0] : "1.0"} 或 3.5 * angstrom`,
+            message: `'${cleanValue}' is not a valid float or mathematical expression`,
+            suggestion: `Expected float or mathematical expression, e.g.: ${variable.Default ? variable.Default[0] : "1.0"} or 3.5 * angstrom`,
           };
-          log(`验证失败: ${errorResult.message}`, "WARN");
+          log(`Validation failed: ${errorResult.message}`, "WARN");
           return errorResult;
         }
         break;
@@ -161,21 +161,21 @@ function validateVariableValue(variableName, value, variables) {
         ) {
           const errorResult = {
             isValid: false,
-            message: `'${cleanValue}' 不是有效的逻辑值`,
-            suggestion: "可选值: true, false, yes, no",
+            message: `'${cleanValue}' is not a valid logical value`,
+            suggestion: "Valid values: true, false, yes, no",
           };
-          log(`验证失败: ${errorResult.message}`, "WARN");
+          log(`Validation failed: ${errorResult.message}`, "WARN");
           return errorResult;
         }
         break;
 
       case "string":
-        // 字符串类型通常都是有效的
+        // String types are usually valid
         break;
     }
 
     return { isValid: true };
-  }, `验证变量 ${variableName} 的值`, { isValid: false, message: "验证过程中发生错误" });
+  }, `Validate value for variable ${variableName}`, { isValid: false, message: "Error occurred during validation" });
 }
 
 module.exports = {

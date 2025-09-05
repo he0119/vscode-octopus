@@ -2,21 +2,21 @@ const { safeExecute } = require("./logger");
 const { getCurrentVersion } = require("./versionManager");
 
 /**
- * 解析变量赋值语句
+ * Parse variable assignment statement
  * @param {string} line
  * @returns {object|null} {variableName, value, startPos, endPos}
  */
 function parseVariableAssignment(line) {
   return safeExecute(() => {
-    // 匹配 VariableName = value 格式
-    // 在 Octopus 中，# 字符开始的部分是注释，需要在解析值时排除
+    // Match VariableName = value format
+    // In Octopus, parts starting with # character are comments, need to exclude when parsing values
     const match = line.match(/^\s*([A-Za-z][A-Za-z0-9_]*)\s*=\s*(.+)$/);
     if (!match) return null;
 
     const variableName = match[1].trim();
     let fullValue = match[2];
 
-    // 检查是否有行末注释（# 字符开始）
+    // Check if there's an end-of-line comment (starting with # character)
     const commentIndex = fullValue.indexOf("#");
     const value = commentIndex !== -1 ? fullValue.substring(0, commentIndex).trim() : fullValue.trim();
 
@@ -33,14 +33,14 @@ function parseVariableAssignment(line) {
     };
 
     return result;
-  }, `解析变量赋值语句: "${line}"`);
+  }, `Parse variable assignment statement: "${line}"`);
 }
 
 /**
- * 根据变量的 Section 和 Name 生成文档 URL
- * @param {string} section 变量所属的章节
- * @param {string} name 变量名称
- * @returns {string} 生成的文档 URL
+ * Generate documentation URL based on variable's Section and Name
+ * @param {string} section Section the variable belongs to
+ * @param {string} name Variable name
+ * @returns {string} Generated documentation URL
  */
 function generateDocUrl(section, name) {
   if (!section || !name) {
@@ -50,27 +50,27 @@ function generateDocUrl(section, name) {
   const currentVersion = getCurrentVersion();
 
   try {
-    // 根据当前版本确定文档版本号（使用大版本号）
-    const docVersion = currentVersion.split(".")[0]; // 从 "14.1" 提取 "14"，从 "16.2" 提取 "16"
+    // Determine documentation version number based on current version (using major version)
+    const docVersion = currentVersion.split(".")[0]; // Extract "14" from "14.1", "16" from "16.2"
 
-    // 基础 URL - 根据版本动态生成
+    // Base URL - dynamically generated based on version
     const baseUrl = `https://octopus-code.org/documentation/${docVersion}/variables/`;
 
-    // 处理 Section：将 :: 替换为 /，转为小写，空格替换为下划线
+    // Process Section: replace :: with /, convert to lowercase, replace spaces with underscores
     const processedSection = section
       .replace(/::/g, "/")
       .toLowerCase()
       .replace(/\s+/g, "_");
 
-    // 处理 Name：转为小写
+    // Process Name: convert to lowercase
     const processedName = name.toLowerCase();
 
-    // 拼接完整 URL
+    // Concatenate complete URL
     const docUrl = `${baseUrl}${processedSection}/${processedName}/`;
 
     return docUrl;
   } catch (error) {
-    console.error(`生成文档 URL 时出错 (Section: ${section}, Name: ${name}):`, error);
+    console.error(`Error generating documentation URL (Section: ${section}, Name: ${name}):`, error);
     return null;
   }
 }
