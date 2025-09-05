@@ -1,5 +1,5 @@
 {
-  "name": "octopus",
+  "name": "octopus-code",
   "displayName": "Octopus",
   "description": "Octopus input file language support with syntax highlighting, hover documentation, and documentation links",
   "version": "0.0.1",
