@@ -7,6 +7,7 @@
     "type": "git",
     "url": "https://github.com/he0119/vscode-octopus.git"
   },
+  "publisher": "he0119",
   "engines": {
     "vscode": "^1.75.0"
   },
