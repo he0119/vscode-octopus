@@ -45,7 +45,7 @@ function containsMathematicalExpression(value) {
   }
 
   // Check if contains complex number notation {real, imag}
-  if (/\{\s*[^}]+\s*,\s*[^}]+\s*\}/.test(value)) {
+  if (/\{\s*[^,}\s]+\s*,\s*[^,}\s]+\s*\}/.test(value)) {
     return true;
   }
 

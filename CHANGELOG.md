@@ -8,6 +8,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [0.1.0] - 2025-09-06
 
+### Fixed
+
+- Failed to validate complex numbers in some cases
+
 ## [0.0.1] - 2025-09-05
 
 - Initial release
